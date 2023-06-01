@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<title>后台管理系统模板-bootstrap中文</title>
+	<meta name="keywords" content="后台模板,后台管理系统,HTML模板">
+	<meta name="description" content="基于Bootstrap后台管理系统的HTML模板">
+	<link href="../../css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../css/fonts.css" rel="stylesheet">
+	<link href="../../css/home.css" rel="stylesheet">
+</head>
+
+<body>
+
+	<!--页面主要内容-->
+	<main class="ftdms-layout-content">
+
+		<div class="container-fluid" style="margin-bottom:90px;">
+
+			<div class="row" style="margin-top:15px;">
+				<div class="col-sm-6 col-lg-3">
+					<div class="card bg-primary">
+						<div class="card-body clearfix">
+							<div class="pull-left">
+								<p class="h6 text-white m-t-0">今日收支</p>
+								<p class="h4 text-white m-b-0">
+									<div>
+										i:<span id="todayin"></span>&nbsp;
+										o:<span id="todayout"></span>&nbsp;
+									</div>									
+								</p>
+							</div>
+							<div class="pull-right"> <span class="img-avatar img-avatar-48 bg-translucent"><i
+										class="ftsucai-56 fa-1-5x"></i></span> </div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-lg-3">
+					<div class="card bg-success">
+						<div class="card-body clearfix">
+							<div class="pull-left">
+								<p class="h6 text-white m-t-0">昨日收支</p>
+								<p class="h4 text-white m-b-0">
+									<div>
+										i: <span id="yesterdayin"></span>&nbsp;
+										o: <span id="yesterdayout"></span>&nbsp;									
+									</div>	
+								</p>
+							</div>
+							<div class="pull-right"> <span class="img-avatar img-avatar-48 bg-translucent"><i
+										class="ftsucai-310 fa-1-5x"></i></span> </div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-lg-3">
+					<div class="card bg-success">
+						<div class="card-body clearfix">
+							<div class="pull-left">
+								<p class="h6 text-white m-t-0">月度累计收收支</p>
+								<p class="h3 text-white m-b-0">
+									<div>
+										i: <span id="monthin"></span>&nbsp;
+										o: <span id="monthout"></span>&nbsp;
+									</div>	
+								</p>
+							</div>
+							<div class="pull-right"> <span class="img-avatar img-avatar-48 bg-translucent"><i
+										class="ftsucai-55 fa-1-5x"></i></span> </div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-lg-3">
+					<div class="card bg-purple">
+						<div class="card-body clearfix">
+							<div class="pull-left">
+								<p class="h6 text-white m-t-0">年度累计收入</p>
+								<p class="h3 text-white m-b-0">
+									<div>
+										in: <span id="yearin"></span> &nbsp;&nbsp;&nbsp;
+										out: <span id="yearout"></span>
+									</div>
+								</p>
+							</div>
+							<div class="pull-right"> <span class="img-avatar img-avatar-48 bg-translucent"><i
+										class="ftsucai-310 fa-1-5x"></i></span> </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="card">
+						<div class="card-header">
+							<h4>当月每天收支走势</h4>
+						</div>
+						<div class="card-body">
+							<canvas class="curMonthEveryDays-chartjs-lines"></canvas>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="card">
+						<div class="card-header">
+							<h4>当月支出类型占比</h4>
+						</div>
+						<div class="card-body">
+							<canvas class="revenue-ExpenseType-chartjs-lines"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="card">
+						<div class="card-header">
+							<h4>当年每月收支走势</h4>
+						</div>
+						<div class="card-body">
+							<canvas class="eachMonth-chartjs-bars"></canvas>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="card">
+						<div class="card-header">
+							<h4>当年支出类型占比</h4>
+						</div>
+						<div class="card-body">
+							<canvas class="revenue-ExpenseType-CurYear-chartjs-lines"></canvas>
+						</div>
+					</div>
+				</div>				
+			</div>
+			<div class="row">				
+				<div class="col-lg-6">
+					<div class="card">
+						<div class="card-header">
+							<h4>一年轮收支走势</h4>
+						</div>
+						<div class="card-body">
+							<canvas class="eachYear-chartjs-lines"></canvas>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="card">
+						<div class="card-header">
+							<h4>一年轮收支类型占比</h4>
+						</div>
+						<div class="card-body">
+							<canvas class="revenue-ExpenseType-AroundYear-chartjs-lines"></canvas>
+						</div>
+					</div>
+				</div>	
+			</div>
+		</div>
+
+	</main>
+	<!--End 页面主要内容-->
+
+	<script type="text/javascript" src="../../js/jquery-2.1.1.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="../../js/bootstrap.min.js"></script>
+	<script src="../../js/bootstrap-table/dist/bootstrap-table.min.js"></script>
+	<!-- Latest compiled and minified Locales -->
+	<script src="../../js/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+
+	<!--图表插件-->
+	<script type="text/javascript" src="../../js/Chart.js"></script>
+	<script type="text/javascript" src="../../js/app/common.js"></script>
+	<script type="text/javascript" src="../../js/app/home.js"></script>
+</body>
+
+</html>

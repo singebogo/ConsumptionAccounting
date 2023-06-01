@@ -1,0 +1,166 @@
+body{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+}
+
+/* 遮罩层 */
+.black_overlay {
+    display: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 1001;
+    -moz-opacity: 0.8;
+    opacity: .40;
+    filter: alpha(opacity=40);
+}
+
+.white_content {
+    display: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    /* background-color: #f5f6fa; */
+    z-index: 1002;
+    overflow: hidden;
+}
+
+.white_content_dbselect {
+    display: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    /* background-color: #f5f6fa; */
+    z-index: 1004;
+    overflow: hidden;
+}
+
+.white_content_fileImport{
+    display: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    /* background-color: #f5f6fa; */
+    z-index: 1004;
+    overflow: hidden;
+}
+
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+    padding: 5px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.modal-header {
+    padding: 5px;
+    border-bottom: 1px solid #ce7878;
+    background-color: #f5f6fa;
+}
+
+.modal-body {
+    position: relative;
+    padding: 2px 0px;
+}
+
+.modal-dialog {
+    height: 600px;
+    /* margin: 100px 200px; */
+    border-radius: 3px;
+    -moz-opacity: 1;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.dbselectmodal-dialog {
+    height: 600px;
+    left: 550px;
+    top: 130px;
+    border-radius: 3px;
+    -moz-opacity: 1;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.fileImportmodalDialog {
+    width: 99%;
+    min-height: 600px;
+    left: 5px;
+    top: 5px;
+    border-radius: 3px;
+    -moz-opacity: 1;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.querytoolbar-header {
+    padding: 5px;
+    border-bottom: 1px solid #f5f6fa;
+    background-color: #f5f6fa;
+}
+
+.querytoolbar-body {
+    padding: 4px 10px;
+}
+
+.querytoolbar-footer {
+    border-bottom: 1px solid #f4f4f4;
+}
+
+
+.form-horizontal, .control-label {
+    text-align: right !important;
+    color: #333;
+    padding: 3px 0px 1px 2px;
+    position:relative;
+   /*  padding-bottom:1px;
+    padding-right: 10px;  */
+}
+
+.form-control {
+	border-color:#d2d6de;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    position:relative;
+   /*behavior: url('/dist/css/PIE.htc');*/
+}
+
+.input-sm{
+	font-size: 12px;
+	padding: 3px 3px;
+	height: 22px;
+	line-height: 16px;
+}
+
+.inputW{
+	width : 110% !important;
+}
+
+.querytoolbar-title{
+    font-size: 14px;
+}
+.form-group {
+    margin-bottom: 5px;
+}
+
+.alert {
+    padding: 5px 30px 5px 5px;
+    margin-bottom: 0px;
+}

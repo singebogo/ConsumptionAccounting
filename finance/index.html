@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="zh" class="no-js">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>记账后台管理系统</title>
+	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+	<link rel="stylesheet" href="css/bootstrap.min.css"> <!-- Resource style -->
+	<link rel="stylesheet" type="text/css" href="css/default.css">
+	<link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
+</head>
+
+<body>
+	<header class="cd-main-header">
+		<div class="cd-logo">
+			<span style="font-size: 16.5px; color: white;">记账后台管理系统</span>
+		</div>
+
+		<div class="cd-search is-hidden">
+			<form action="#0">
+				<input type="search" placeholder="Search...">
+			</form>
+		</div> <!-- cd-search -->
+
+		<a href="javascript:void(0);" class="cd-nav-trigger">Menu<span></span></a>
+
+		<nav class="cd-nav">
+			<ul class="cd-top-nav">
+				<li class="has-children">
+					<a href="javascript:void(0);" id="notices">
+						<!-- <i class="glyphicon glyphicon-envelope"></i> -->
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-bell" viewBox="0 0 16 16">
+							<path
+								d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z" />
+						</svg>
+						<span class="badge bg-red">23</span>
+					</a>
+					<ul>
+						<li><a href="#0" target="main_iframe"><i class="glyphicon glyphicon-user"></i> My
+								Account1</a>
+						</li>
+						<li><a href="#0" target="main_iframe"><i class="glyphicon glyphicon-edit"></i> Edit
+								Account1</a>
+						</li>
+						<li><a href="login.html"><i class="glyphicon glyphicon-log-out"></i>Logout1</a></li>
+					</ul>
+				</li>
+				<li class="has-children">
+					<a href="javascript:void(0);" id="messages">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-chat-dots" viewBox="0 0 16 16">
+							<path
+								d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+							<path
+								d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9.06 9.06 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.437 10.437 0 0 1-.524 2.318l-.003.011a10.722 10.722 0 0 1-.244.637c-.079.186.074.394.273.362a21.673 21.673 0 0 0 .693-.125zm.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6c0 3.193-3.004 6-7 6a8.06 8.06 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a10.97 10.97 0 0 0 .398-2z" />
+						</svg>
+						<span class="badge bg-red">13</span>
+					</a>
+					<ul>
+						<li><a href="#0" target="main_iframe"><i class="glyphicon glyphicon-user"></i> My
+								Account1</a>
+						</li>
+						<li><a href="#0" target="main_iframe"><i class="glyphicon glyphicon-edit"></i> Edit
+								Account1</a>
+						</li>
+						<li><a href="login.html"><i class="glyphicon glyphicon-log-out"></i> Logout1</a></li>
+					</ul>
+				</li>
+				<li class="has-children">
+					<a href="javascript:void(0);" id="user">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-person" viewBox="0 0 16 16">
+							<path
+								d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+						</svg>
+						<span id="username">admin</span>
+					</a>
+					<ul>
+						<li>
+							<a href="javascript:void(0);" target="main_iframe">
+								<i class="glyphicon glyphicon-user"></i> 
+								<span>My Account</span>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" target="main_iframe">
+								<i class="glyphicon glyphicon-edit"></i>
+								<span>Edit Account</span>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" id="logout">
+								<i class="glyphicon glyphicon-log-out"></i>
+								<span>Logout</span>
+							</a>
+							</li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		<!-- 面包屑 -->
+		<nav>
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item first"><a href="./page/home/home.html" target="main_iframe">Overview</a></li>
+				<li class="breadcrumb-item second"></li>
+				<li class="breadcrumb-item active" aria-current="page"></li>
+			</ol>
+		</nav>
+	</header> <!-- .cd-main-header -->
+
+	<main class="cd-main-content">
+		<nav class="cd-side-nav">
+			<ul>
+				<li class="cd-label">Main</li>
+				<li class="overview menuitems">
+					<a href="./page/home/home.html" target="main_iframe">Overview</a>
+				</li>
+			</ul>
+			<ul>
+				<li class="cd-label">Data Editing</li>
+				<li class="has-children income menuitems">
+					<a href="javascript:void(0);">income expenditure <span class="count">1</span>
+						<i style="float: right;" class="glyphicon glyphicon-chevron-right"></i></a>
+					<ul>
+						<li>
+							<a href="./page/edit/DailyInout.html" target="main_iframe">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-vector-pen" viewBox="0 0 16 16">
+									<path fill-rule="evenodd"
+										d="M10.646.646a.5.5 0 0 1 .708 0l4 4a.5.5 0 0 1 0 .708l-1.902 1.902-.829 3.313a1.5 1.5 0 0 1-1.024 1.073L1.254 14.746 4.358 4.4A1.5 1.5 0 0 1 5.43 3.377l3.313-.828L10.646.646zm-1.8 2.908-3.173.793a.5.5 0 0 0-.358.342l-2.57 8.565 8.567-2.57a.5.5 0 0 0 .34-.357l.794-3.174-3.6-3.6z" />
+									<path fill-rule="evenodd"
+										d="M2.832 13.228 8 9a1 1 0 1 0-1-1l-4.228 5.168-.026.086.086-.026z" />
+								</svg>
+								&nbsp Daily Inout
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="has-children views menuitems">
+					<a href="javascript:void(0);">Views<span class="count">3</span>
+						<i style="float: right;" class="glyphicon glyphicon-chevron-right"></i></a>
+					<ul>
+						<li><a href="./page/views/DayView.html" target="main_iframe">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-file-bar-graph" viewBox="0 0 16 16">
+									<path
+										d="M4.5 12a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-1zm3 0a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1zm3 0a.5.5 0 0 1-.5-.5v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1z" />
+									<path
+										d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
+								</svg>
+								&nbsp Day View
+							</a></li>
+						<li><a href="./page/views/MonthView.html" target="main_iframe">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-clipboard-data-fill" viewBox="0 0 16 16">
+									<path
+										d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z" />
+									<path
+										d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1ZM10 8a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V8Zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1Zm4-3a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z" />
+								</svg>
+								&nbsp Month View
+							</a></li>
+						<li>
+							<a href="./page/views/AroundYearView.html" target="main_iframe">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-clipboard-data" viewBox="0 0 16 16">
+									<path
+										d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z" />
+									<path
+										d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
+									<path
+										d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
+								</svg>
+								&nbsp A round of years View
+							</a>
+						</li>
+					</ul>
+				</li>
+
+			</ul>
+			<ul>
+				<li class="cd-label">configuration</li>
+				<li class="has-children bookmarks menuitems">
+					<a href="javascript:void(0);">Underlying Type <span class="count">1</span>
+						<i style="float: right;" class="glyphicon glyphicon-chevron-right"></i>
+					</a>
+					<ul>
+						<li>
+							<a href="./page/bases/SpendType.html" target="main_iframe">
+								<i class="glyphicon glyphicon-cog"></i> underlying type</a>
+						</li>
+					</ul>
+				</li>
+				<li class="has-children bookmarks  menuitems">
+					<a href="javascript:void(0);">InOutExpens Type <span class="count">1</span>
+						<i style="float: right;" class="glyphicon glyphicon-chevron-right"></i>
+					</a>
+					<ul>
+						<li>
+							<a href="./page/bases/ExpenseDetailsType.html" target="main_iframe">
+								<i class="glyphicon glyphicon-leaf"></i> inout expenses type</a>
+						</li>
+					</ul>
+				</li>
+				<li class="has-children metrics notifications menuitems">
+					<a href="javascript:void(0);">Metrics <span class="count">1</span>
+						<i style="float: right;" class="glyphicon glyphicon-chevron-right"></i></a>
+					<ul>
+						<li>
+							<a href="./page/edit/DetectionMetrics.html" target="main_iframe">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-alarm" viewBox="0 0 16 16">
+									<path
+										d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5z" />
+									<path
+										d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1h-3zm1.038 3.018a6.093 6.093 0 0 1 .924 0 6 6 0 1 1-.924 0zM0 3.5c0 .753.333 1.429.86 1.887A8.035 8.035 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5zM13.5 1c-.753 0-1.429.333-1.887.86a8.035 8.035 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1z" />
+								</svg>
+								&nbsp detection metrics
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="cd-label">manager</li>
+				<li class="has-children users menuitems">
+					<a href="javascript:void(0);">Users <span class="count">2</span>
+						<i style="float: right;" class="glyphicon glyphicon-chevron-right"></i></a>
+					<ul>
+						<li><a href="./page/home/home.html" target="main_iframe">All Users</a></li>
+						<li><a href="./page/manager/pages_permission.html" target="main_iframe">permission</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		<div class="content-wrapper">
+			<div class="content-iframe" style="background-color: white; height: 100%;">
+				<div class="mainContent" id="content-main" style="margin-top: 40px; padding: 0px; height: 100%;">
+					<iframe name="main_iframe" width="100%" height="100%" class="main_iframe" id="default"
+						src="./page/home/home.html" frameborder="0" data-id="home.html"></iframe>
+				</div>
+			</div>
+			<!-- <h1>Responsive Sidebar Navigation</h1> -->
+		</div> <!-- .content-wrapper -->
+	</main> <!-- .cd-main-content -->
+
+	<script src="js/modernizr.js"></script> <!-- Modernizr -->
+	<script src="js/jquery-2.1.1.min.js"></script>
+	<script src="js/jquery.menu-aim.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/utils/memoryUtils.js"></script>
+	<script src="js/utils/storageUtils.js"></script>
+	<script src="js/app/main.js"></script>
+</body>
+
+</html>

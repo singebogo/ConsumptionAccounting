@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>记账后台管理系统</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- <link rel="stylesheet" href="./css/bootstrap.min.css"> -->
+
+    <!--图标-->
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+
+    <!--布局框架-->
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+
+    <!--主要样式-->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+
+    <link rel="stylesheet" href="./css/common.css">
+
+</head>
+
+<body>
+<div class="login">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-pic js-tilt" data-tilt>
+                <img src="img/img-01.png" alt="IMG">
+            </div>
+            <div class="" id="ajaxForm">
+					<span class="login100-form-title">
+						用户登录
+					</span>
+
+                <div class="wrap-input100 validate-input">
+                    <input class="input100" type="text" id="username" placeholder="用户名/手机号码/邮箱">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
+                </div>
+
+                <div class="wrap-input100 validate-input">
+                    <input class="input100" type="password" id="password" placeholder="密码">
+                    <span class="focus-input100"></span>
+                    <span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+                </div>
+                <div id="notices" class="wrap-input100 validate-input" style="height: 15px;">
+
+                </div>
+
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn" id="login">
+                        登陆
+                    </button>
+                </div>
+
+                <div class="text-center ">
+                    <a class="txt2" href="javascript:">
+                        忘记密码？
+                    </a>
+                </div>
+
+                <div class="text-center p-t-136">
+                    <a class="txt2" href="#">
+                        还没有账号？立即注册
+                        <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="./js/jquery-2.1.1.min.js"></script>
+<script src="./js/jquery.form.min.js"></script>
+<script src="./js/app/common.js"></script>
+<script src="./js/utils/memoryUtils.js"></script>
+<script src="./js/utils/storageUtils.js"></script>
+<script src="./js/app/login.js"></script>
+
+</html>
