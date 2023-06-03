@@ -1,0 +1,10 @@
+Django==3.0
+django-admin==2.0.1
+django-cors-headers==3.13.0
+django-excel-base==1.0.4
+django-excel-response2==3.0.2
+django-import-export==2.9.0
+django-ranged-response==0.2.0
+django-simple-captcha==0.5.17
+django-simpleui==2022.7.29
+PyMySQL==1.0.2
