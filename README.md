@@ -7,8 +7,8 @@
         alipay模板：支付宝-》我的-》账单-》开具个人流水证明
     2.  前端-日月年消费明细，统计等可视化展示；
     3.  可视化中一些超标费用进行颜色标注。
-![wechat模板](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/wechat.jpg) 
-![alipay模板](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/alipay.jpg) 
+![wechat模板](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/wechat.png) 
+![alipay模板](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/alipay.png) 
 
   ### 技术栈：
     前端：原生js+jquery+jschart
