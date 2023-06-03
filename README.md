@@ -11,16 +11,19 @@
     
  ## 系统展示：
      *. home
-          ![home](./imgs/home.jpg) 
+![home](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/home.jpg) 
+     *. Expense Type
+![明细类型输入](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/inout%20expenses%20type.png)
      *. Daily Inout(明细输入)
-          ![明细输入](./imgs/Daily Inout.jpg)
+![明细输入](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/Daily%20Inout.png)
+![wechat/alipay导入](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/import.png)
      *. Views
           *. Day View
-              ![日明细](./imgs/Day View.jpg)
+![日明细](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/day%20view.png)
           *. Month View
-              ![月明细](./imgs/Month View.jpg)
+![月明细](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/month%20view.png)
           *. A round of years View 
-              ![十二年明细](./imgs/A round of years View.jpg)
+![十二年明细](https://github.com/singebogo/ConsumptionAccounting/blob/master/imgs/A%20round%20of%20years%20View%20.png)              
   ## 环境搭建
      ### 后端服务
          1、创建虚拟环境vitrualenv Env
