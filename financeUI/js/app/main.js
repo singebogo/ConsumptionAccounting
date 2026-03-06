@@ -1,4 +1,5 @@
 jQuery(document).ready(function () {
+
 	//cache DOM elements
 	var mainContent = $('.cd-main-content'),
 		header = $('.cd-main-header'),
@@ -47,7 +48,7 @@ jQuery(document).ready(function () {
 		$('.cd-nav>.cd-top-nav').children('li').removeClass('selected');
 		var mq = checkMQ(),
 		selectedItem = $(this);
-		if (mq == 'mobile' || mq == 'tablet') {
+		if (mq === 'mobile' || mq === 'tablet') {
 			event.preventDefault();
 			if (selectedItem.parent('li').hasClass('selected')) {
 				selectedItem.parent('li').removeClass('selected');
@@ -57,7 +58,7 @@ jQuery(document).ready(function () {
 				selectedItem.parent('li').addClass('selected');
 			}
 		}
-		if (mq == 'desktop') {
+		if (mq === 'desktop') {
 			e.preventDefault();
 			// $e.parent().parent('li').addClass('selected');
 			$e.parents('li').addClass('selected');
@@ -101,11 +102,11 @@ jQuery(document).ready(function () {
 	function moveNavigation() {
 		var mq = checkMQ();
 
-		if (mq == 'mobile' && topNavigation.parents('.cd-side-nav').length == 0) {
+		if (mq === 'mobile' && topNavigation.parents('.cd-side-nav').length === 0) {
 			detachElements();
 			topNavigation.appendTo(sidebar);
 			searchForm.removeClass('is-hidden').prependTo(sidebar);
-		} else if ((mq == 'tablet' || mq == 'desktop') && topNavigation.parents('.cd-side-nav').length > 0) {
+		} else if ((mq === 'tablet' || mq === 'desktop') && topNavigation.parents('.cd-side-nav').length > 0) {
 			detachElements();
 			searchForm.insertAfter(header.find('.cd-logo'));
 			topNavigation.appendTo(header.find('.cd-nav'));
@@ -121,19 +122,19 @@ jQuery(document).ready(function () {
 
 	function checkSelected(mq) {
 		//on desktop, remove selected class from items selected on mobile/tablet version
-		if (mq == 'desktop') $('.has-children.selected').removeClass('selected');
+		if (mq === 'desktop') $('.has-children.selected').removeClass('selected');
 	}
 
 	function checkScrollbarPosition() {
 		var mq = checkMQ();
 
-		if (mq != 'mobile') {
+		if (mq !== 'mobile') {
 			var sidebarHeight = sidebar.outerHeight(),
 				windowHeight = $(window).height(),
 				mainContentHeight = mainContent.outerHeight(),
 				scrollTop = $(window).scrollTop();
 
-			((scrollTop + windowHeight > sidebarHeight) && (mainContentHeight - sidebarHeight != 0)) ? sidebar.addClass('is-fixed').css('bottom', 0) : sidebar.removeClass('is-fixed').attr('style', '');
+			((scrollTop + windowHeight > sidebarHeight) && (mainContentHeight - sidebarHeight !== 0)) ? sidebar.addClass('is-fixed').css('bottom', 0) : sidebar.removeClass('is-fixed').attr('style', '');
 		}
 		scrolling = false;
 	};
@@ -188,26 +189,74 @@ jQuery(document).ready(function () {
 	// 设置iframe的高度
 	contentwrapper.css({ height: $(document.body).height() + 56 + 20 + "px" });
 
-	$('#logout').click(function(){
-		$.ajax({
-			url: "http://127.0.0.1:8000/Authlogin/logout/",       //提交地址：默认是form的action,如果申明,则会覆盖
-			method: "POST",
-			data: { username: user.username},
-			dataType: "json",
-			// contentType: 'application/json',  	//一定要指定格式 contentType
-			async: false,
-			success: function (data) {
-				if("1".localeCompare(data.code) == 0){
-					user = {}
-					localStorage.removeItem(USER_KEY)
-					window.location.href = 'index.html';
-				}else if("0".localeCompare(data.code)  == 0){
-					notices(data.msg);
-				}
-			},
-			error: function (data) {
-				notices("请求失败");
-			},
-		})
+	$('#logout').on('click', function(e) {
+		e.preventDefault();
+
+		$.confirm({
+			title: '确认退出',
+			content: '确定要退出登录吗？',
+			buttons: {
+				确认: function() {
+					$.ajax({
+						url: logout_url,
+						method: "POST",
+						data: { username: user.username},
+						dataType: "json",
+						success: function(res) {
+							if (res.code === '1') {
+								// 清除用户信息
+								sessionStorage.removeItem('user');
+								localStorage.removeItem('rememberUsername');
+								// 跳转到登录页
+								window.location.href = 'login.html';
+							}else if("0".localeCompare(res.code)  === 0){
+								notices(data.msg);
+							}
+						}
+					});
+				},
+				取消: function() {}
+			}
+		});
 	});
-});
+
+	// ===== 3. 锁定屏幕 =====
+	$('#lockScreen').on('click', function(e) {
+		e.preventDefault();
+		// 保存当前状态
+		sessionStorage.setItem('lockScreen', 'true');
+		sessionStorage.setItem('lockTime', new Date().getTime());
+		// 跳转到锁屏页
+		window.location.href = 'lock-screen.html';
+	});
+
+	// ===== 6. 获取CSRF Token =====
+	window.getCookie = function getCookie(name){
+		var cookieValue = null;
+		if (document.cookie && document.cookie !== '') {
+			var cookies = document.cookie.split(';');
+			for (var i = 0; i < cookies.length; i++) {
+				var cookie = jQuery.trim(cookies[i]);
+				if (cookie.substring(0, name.length + 1) === (name + '=')) {
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+
+	// ===== 7. 激活当前菜单 =====
+	function setActiveMenu() {
+		var currentPath = window.location.pathname;
+		$('.cd-side-nav a').each(function() {
+			var href = $(this).attr('href');
+			if (href && currentPath.indexOf(href) > -1) {
+				$(this).parents('.has-children').addClass('active');
+				$(this).addClass('active');
+			}
+		});
+	}
+	setActiveMenu();
+
+})

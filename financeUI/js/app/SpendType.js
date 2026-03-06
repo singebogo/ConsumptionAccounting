@@ -34,7 +34,7 @@ $(function () {
         { tag: 'textarea', label: "备注", placeholder: "请输入", id: "remark", options: "", col: 6, labelcol: 2, tagcol: 10 },
     ];
     initQueryToolbar($('#querytoolbar'), "查询条件", bodyObj, footerObj, 5, dialogbodyObj);
-    initpopoveModalDialog($('#propve'), "新增", dialogbodyObj, 4, "http://127.0.0.1:8000/infrastruct/CodetypeChange/");
+    initpopoveModalDialog($('#propve'), "新增", dialogbodyObj, 4, infrastructCodeTypeChange_url);
 
     let dateFormat = "yy-mm-dd";
 
@@ -87,19 +87,16 @@ $(function () {
 
     $('#vaildiddateQuery').datepicker({ "dateFormat": "yy-mm-dd" });
 
-    var queryUrl = 'http://127.0.0.1:8000/infrastruct/CodetypeAll/';
-    var deleteUrl = 'http://127.0.0.1:8000/infrastruct/CodetypeDelete/';
 
     function queryParamsFun(params) {
         //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
-        var temp = {
+        return {
             startdateQuery: $('#start-date').val(),
             enddateQuery: $('#end-date').val(),
             codeTypeQuery: $('#configTypeQuery').val(),
             validindQuery: $('#validindQuery').val(),
         };
-        return temp;
-    };
+    }
 
     function onLoadSuccessFun() {
 
@@ -170,7 +167,7 @@ $(function () {
         // },
     ];
 
-    initResultTable(queryUrl, deleteUrl, "POST", columns, 'codetype', dialogbodyObj, queryParamsFun, onLoadSuccessFun, onLoadErrorFun);
+    initResultTable(infrastructCodetypeAll_url, infrastructCodetypeDelete_url, "POST", columns, 'codetype', dialogbodyObj, queryParamsFun, onLoadSuccessFun, onLoadErrorFun);
 
     // about query
     $("#close").click(function () {
@@ -193,7 +190,7 @@ $(function () {
         $('#title').text("新增配置");
         for (let i = 0; i < dialogbodyObj.length; i++) {
             $('#' + dialogbodyObj[i].id).removeAttr("disabled");
-        };
+        }
     });
 
     $('#reset').click(function () {
@@ -209,7 +206,7 @@ $(function () {
         // 查询条件初始化
         $('#selectCode').val($('#configTypeQuery').val());
 
-        initDbSelect("http://127.0.0.1:8000/infrastruct/vaildCodeTypeQuery/", $(this));
+        initDbSelect(DailyinoutCodeTypeQuery_url, $(this));
     });
 
 });

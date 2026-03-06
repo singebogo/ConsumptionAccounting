@@ -13,4 +13,5 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'finance.settings')
 
+from channels.routing import get_default_application
 application = get_wsgi_application()

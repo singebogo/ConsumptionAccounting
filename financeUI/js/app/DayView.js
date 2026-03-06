@@ -104,7 +104,7 @@ $(document).ready(function (e) {
         getMetricsNotices();
 
         $monthTable = $('#dayTable').bootstrapTable({
-            url: "http://127.0.0.1:8000/DataPresentation/DataPresentation/",                      //请求后台的URL（*）
+            url: DataPresentation_url,                      //请求后台的URL（*）
             method: "POST",                      //请求方式（*）
             // data: data,
             toolbar: '#toolbar',              //工具按钮用哪个容器
@@ -122,10 +122,8 @@ $(document).ready(function (e) {
             search: true,                      //是否显示表格搜索
             searchOnEnterkey: true,            //回车执行搜索
             strictSearch: true,
-            showColumns: true,                  //是否显示所有的列（选择显示的列）
             showRefresh: true,                  //是否显示刷新按钮
             minimumCountColumns: 2,             //最少允许的列数
-            clickToSelect: false,                //是否启用点击选中行
             // height: 650,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
             uniqueId: "Id",                     //每一行的唯一标识，一般为主键列
             showToggle: false,                   //是否显示详细视图和列表视图的切换按钮
@@ -176,7 +174,7 @@ $(document).ready(function (e) {
                         sum = sum + parseFloat(value[i].money);
                         element["sum"] = sum.toFixed(2);
                     }
-                    if (JSON.stringify(element) != '{}') {
+                    if (JSON.stringify(element) !== '{}') {
                         formatData.push(element);
                     }
                 }
@@ -195,7 +193,7 @@ $(document).ready(function (e) {
 
             onClickCell: function (field, value, row, element) {
                 var ele = $(element).children('a');
-                if (ele.length == 0) {
+                if (ele.length === 0) {
                     return;
                 }
                 $a = $(ele[0]);
@@ -208,7 +206,7 @@ $(document).ready(function (e) {
                 });
                 ids = JSON.stringify(idsArray);
                 $.ajax({
-                    url: 'http://127.0.0.1:8000/DataPresentation/DataPrsentQueryPrimary/',
+                    url: DataPrsentQueryPrimary_url,
                     type: 'POST',
                     data: "id=" + idsArray,
                     success: function (obj) {
@@ -313,7 +311,7 @@ $(document).ready(function (e) {
     });
 
     function changeMonth(date) {
-        if (curMonth.localeCompare((date).substring(0, 7)) != 0) {
+        if (curMonth.localeCompare((date).substring(0, 7)) !== 0) {
             curMonth = (date).substring(0, 7);
 
             // 刷新 效率低
@@ -325,7 +323,7 @@ $(document).ready(function (e) {
 
             getCharBarData(initChartBars);
         }
-    };
+    }
 
     function getCharBarData(func){
         let year = curMonth.substring(0, 4);
@@ -345,13 +343,14 @@ $(document).ready(function (e) {
             outdatas.push(0);
         }
         $.ajax({
-            url: 'http://127.0.0.1:8000/DataPresentation/DataPresentation/',
+            url: DataPresentation_url,
             type: 'POST',
             data: {year: year, month: month, type: '3'},
             success: function (obj) {
                 let data = JSON.parse(obj);
-                if(data.out){
-                    let dataout = JSON.parse(data.out);
+                let outDataStr = data.out || data.OutCom || data.output;
+                if(outDataStr){
+                    let dataout = JSON.parse(outDataStr);
                     for(ous in dataout){
                         let index = labels.indexOf(ous);
                         outdatas[index] = dataout[ous];
@@ -486,12 +485,12 @@ $(document).ready(function (e) {
                             // stacked: true,//堆叠
                         }]
                     },
-                    startAngle: 1 * Math.PI,//饼图环形图极地图开始偏转角度
-                    circumference: 1 * Math.PI,//饼图环形图允许图形覆盖                     
+                    startAngle: Math.PI,//饼图环形图极地图开始偏转角度
+                    circumference: Math.PI,//饼图环形图允许图形覆盖
                 },
             });
         }            
-    };
+    }
     getCharBarData(initChartBars);
 
 });

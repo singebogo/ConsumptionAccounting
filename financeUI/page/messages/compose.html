@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写消息 - 记账后台管理系统</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../css/font-awesome.min.css">
+    <!-- 富文本编辑器 -->
+    <link rel="stylesheet" href="../../js/summernote/dist/summernote.css">
+    <!-- 下拉菜单样式 -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/compose.css">
+
+</head>
+
+<body>
+<div class="compose-container">
+    <!-- 头部 -->
+    <div class="compose-header">
+        <h2>
+            <i class="glyphicon glyphicon-pencil"></i>
+            写新消息
+        </h2>
+        <a href="javascript:void(0);" class="btn-close" onclick="window.history.back();">
+            <i class="glyphicon glyphicon-remove"></i>
+        </a>
+    </div>
+
+    <!-- 回复预览（如果是回复消息） -->
+    <div id="replyPreview" style="display: none;">
+        <!-- 动态插入回复预览 -->
+    </div>
+
+    <!-- 消息表单 -->
+    <form id="messageForm">
+        <!-- 收件人 -->
+        <div class="form-group">
+            <label>
+                <i class="glyphicon glyphicon-user"></i>
+                收件人 <span style="color: #ef4444;">*</span>
+            </label>
+            <div class="recipient-selector">
+                <div class="recipient-input-group">
+                    <input type="text"
+                           class="form-control"
+                           id="recipientSearch"
+                           placeholder="请输入用户名或邮箱搜索"
+                           autocomplete="off">
+                    <div class="recipient-dropdown" id="recipientDropdown">
+                        <!-- 动态加载用户列表 -->
+                        <div class="recipient-item">
+                            <div class="recipient-avatar">系</div>
+                            <div class="recipient-info">
+                                <div class="recipient-name">系统通知</div>
+                                <div class="recipient-email">system@finance.com</div>
+                            </div>
+                            <span class="recipient-dept">系统</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" id="selectFromContacts">
+                    <i class="glyphicon glyphicon-book"></i>
+                    通讯录
+                </button>
+            </div>
+            <div id="selectedRecipients" class="selected-recipient">
+                <!-- 动态插入已选收件人标签 -->
+            </div>
+            <div class="invalid-feedback" id="recipientError"></div>
+        </div>
+
+        <!-- 主题 -->
+        <div class="form-group">
+            <label>
+                <i class="glyphicon glyphicon-header"></i>
+                主题
+            </label>
+            <input type="text" class="form-control" id="subject" placeholder="请输入消息主题">
+        </div>
+
+        <!-- 内容 -->
+        <div class="form-group">
+            <label>
+                <i class="glyphicon glyphicon-font"></i>
+                内容 <span style="color: #ef4444;">*</span>
+            </label>
+            <div id="summernote"></div>
+            <div class="invalid-feedback" id="contentError"></div>
+        </div>
+
+        <!-- 附件上传 -->
+        <div class="form-group">
+            <label>
+                <i class="glyphicon glyphicon-paperclip"></i>
+                附件
+            </label>
+            <div class="attachment-area" id="attachmentArea">
+                <input type="file" id="fileInput" style="display: none;" multiple>
+                <i class="glyphicon glyphicon-cloud-upload"></i>
+                <p>点击或拖拽文件到此处上传</p>
+                <p style="font-size: 12px; margin-top: 8px;">支持 .jpg, .png, .pdf, .doc, .xlsx 等格式</p>
+            </div>
+            <div class="attachment-list" id="attachmentList"></div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="compose-actions">
+            <button type="button" class="btn btn-secondary" id="saveDraftBtn">
+                <i class="glyphicon glyphicon-save"></i>
+                保存草稿
+            </button>
+            <button type="button" class="btn btn-danger" id="cancelBtn">
+                <i class="glyphicon glyphicon-ban-circle"></i>
+                取消
+            </button>
+            <button type="submit" class="btn btn-primary" id="sendBtn">
+                <i class="glyphicon glyphicon-send"></i>
+                发送
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- 通讯录模态框 -->
+<div class="modal fade" id="contactsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    <i class="glyphicon glyphicon-book"></i>
+                    通讯录
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="list-group" id="deptList">
+                            <a href="#" class="list-group-item active">
+                                <i class="glyphicon glyphicon-folder-open"></i>
+                                全部
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <i class="glyphicon glyphicon-folder-close"></i>
+                                财务部
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <i class="glyphicon glyphicon-folder-close"></i>
+                                技术部
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <i class="glyphicon glyphicon-folder-close"></i>
+                                人事部
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <i class="glyphicon glyphicon-folder-close"></i>
+                                市场部
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="input-group" style="margin-bottom: 15px;">
+                            <input type="text" class="form-control" id="contactSearch" placeholder="搜索联系人">
+                            <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                    </button>
+                                </span>
+                        </div>
+                        <div id="contactList">
+                            <!-- 联系人列表将动态加载 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="../../js/jquery-2.1.1.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<!-- 富文本编辑器 -->
+<script src="../../js/summernote/dist/summernote.min.js"></script>
+<script src="../../js/summernote/dist/lang/summernote-zh-CN.min.js"></script>
+<!-- 文件上传 -->
+<script src="../../js/jquery.form.min.js"></script>
+<!-- 通知渲染器 -->
+<script src="../../js/utils/constantUtils.js"></script>
+<script src="../../js/app/user/userInfo.js"></script>
+
+<script src="../../js/app/notification/notificationRenderer.js"></script>
+<script src="../../js/app/messages/compose.js"></script>
+
+</body>
+
+</html>

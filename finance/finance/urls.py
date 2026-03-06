@@ -31,4 +31,5 @@ urlpatterns = [
     path('DataPresentation/', include('DataPresentation.urls')),
     path('Metrics/', include('Metrics.urls')),
     path('Overview/', include('Overview.urls')),
+    path('notification/', include('notification.urls')),
 ]

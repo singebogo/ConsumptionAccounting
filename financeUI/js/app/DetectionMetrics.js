@@ -79,12 +79,9 @@ $(function () {
 
     $('#vaildiddate').datepicker({ "dateFormat": "yy-mm-dd" });
 
-    var queryUrl = 'http://127.0.0.1:8000/Metrics/MetricsAll/';
-    var deleteUrl = 'http://127.0.0.1:8000/Metrics/MetricsDelete/';
-
     function queryParamsFun(params) {
         //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
-        var temp = {
+        return {
             codetypeQuery: $('#codetypeQuery').val(),
             codecodeQuery: $('#codecodeQuery').val(),
             limitQuery: ($('#limitQuery').val()),
@@ -93,8 +90,7 @@ $(function () {
             limittypeQuery: $('#limittypeQuery').val(),
             sumlimittypeQuery: $('#sumlimittypeQuery').val(),
         };
-        return temp;
-    };
+    }
 
     function onLoadSuccessFun() {
 
@@ -175,7 +171,7 @@ $(function () {
         // },
     ];
 
-    initResultTable(queryUrl, deleteUrl, "POST", columns, 'id', dialogbodyObj, queryParamsFun, onLoadSuccessFun, onLoadErrorFun);
+    initResultTable(MetricsAllQuery_url, MetricsDelete_url, "POST", columns, 'id', dialogbodyObj, queryParamsFun, onLoadSuccessFun, onLoadErrorFun);
 
 
     // about query
@@ -200,7 +196,7 @@ $(function () {
         // 查询条件初始化
         $('#selectCode').val($(this).val());
 
-        initDbSelect("http://127.0.0.1:8000/infrastruct/vaildCodeTypeQuery/", $(this));
+        initDbSelect(DailyinoutCodeTypeQuery_url, $(this));
     });
 
 
@@ -211,7 +207,7 @@ $(function () {
         // 查询条件初始化
         $('#selectCode').val($(this).val());
 
-        initDbSelect("http://127.0.0.1:8000/infrastruct/vaildCodeQuery/", $(this));
+        initDbSelect(DailyinoutCodeQuery_url, $(this));
     });
 
     $('#codecodes').dblclick(function () {
@@ -221,7 +217,7 @@ $(function () {
         // 查询条件初始化
         $('#selectCode').val($(this).val());
 
-        initDbSelect("http://127.0.0.1:8000/infrastruct/vaildCodeQuery/", $(this));
+        initDbSelect(DailyinoutCodeQuery_url, $(this));
     });
 
 });

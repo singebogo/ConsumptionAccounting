@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '29*2dx(3=nnjqa@-lm@_i-ds(ggu4(kuj!w6fhrxuaidy9ve9x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',  # 添加channels
+    'notification',  # ✅ 新增通知应用
     'corsheaders',
     'Authlogin',
     'Infrastructure',
@@ -44,9 +46,9 @@ INSTALLED_APPS = [
     'DailyInout',
     'Metrics',
     'Overview',
+
 ]
 
-from finance.headers import HttpResponseCustomHeader
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -94,8 +96,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'finance',
-        'USER': 'root',
-        'PASSWORD': 'sqlpwd123',
+        'USER': 'finance_user',
+        'PASSWORD': '123456',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -140,15 +142,72 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
+# CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
+# CORS 配置
+CORS_ALLOW_CREDENTIALS = True  # 重要：允许跨域请求携带 cookies
 
-# 4.添加白名单
-# 凡是出现在白名单中的域名，都可以访问后端接口
-# 添加 django-cors-headers 的白名单, 使白名单中的 host 可以进行跨域请求
-CORS_ORIGIN_WHITELIST = (
-    # 白名单:
+CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
-)
+    "http://127.0.0.1:8000",
+    "http://localhost:63342",
+    "http://127.0.0.1:63342",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "http://localhost:3000",  # 如果是 React 开发服务器
+    "http://127.0.0.1:3000",
+]
 
-# 允许白名单中的 host 跨域请求时携带 cookie
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# CSRF 配置（解决 cookies 被拒绝的问题）
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:63342",
+    "http://127.0.0.1:63342",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+]
+
+# Session 和 CSRF 的 SameSite 配置
+CSRF_COOKIE_SAMESITE = 'None'  # 允许跨站发送 CSRF cookie
+CSRF_COOKIE_SECURE = False      # 开发环境设为 False，生产环境设为 True（使用 HTTPS）
+SESSION_COOKIE_SAMESITE = 'None'  # 允许跨站发送 session cookie
+SESSION_COOKIE_SECURE = False     # 开发环境设为 False，生产环境设为 True
+
+# 删除或注释掉以下配置（如果存在）
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_ALL_ORIGINS = True
+
+# WebSocket 配置（可选，用于实时通知）
+ASGI_APPLICATION = 'finance.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+#  daphne -b 0.0.0.0 -p 8000 finance.asgi:application

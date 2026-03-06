@@ -100,11 +100,10 @@ $(document).ready(function (e) {
 
     function aRoundYearTableInit() {
         $('#aRoundYearTable').bootstrapTable({
-            url: "http://127.0.0.1:8000/DataPresentation/DataPresentation/",                      //请求后台的URL（*）
+            url: DataPresentation_url,                      //请求后台的URL（*）
             method: "POST",                      //请求方式（*）
             toolbar: '#toolbar',              //工具按钮用哪个容器
             contentType: "application/x-www-form-urlencoded",      // post请求必须要有，否则后台接受不到参数
-            clickToSelect: true,                                   // 是否点击选中行
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pagination: true,                   //是否显示分页（*）
@@ -117,7 +116,6 @@ $(document).ready(function (e) {
             search: true,                      //是否显示表格搜索
             searchOnEnterkey: true,            //回车执行搜索
             strictSearch: true,
-            showColumns: true,                  //是否显示所有的列（选择显示的列）
             showRefresh: true,                  //是否显示刷新按钮
             minimumCountColumns: 2,             //最少允许的列数
             clickToSelect: false,                //是否启用点击选中行
@@ -125,8 +123,7 @@ $(document).ready(function (e) {
             uniqueId: "Id",                     //每一行的唯一标识，一般为主键列
             showToggle: false,                   //是否显示详细视图和列表视图的切换按钮
             showHeader: true,
-            showFooter: true,                     //开启底部   
-            showColumns: true,
+            showFooter: true,                     //开启底部
             showPaginationSwitch: true,         // True to show the pagination switch button.
             cardView: false,                    //是否显示详细视图
             detailView: false,                  //是否显示父子表
@@ -155,7 +152,7 @@ $(document).ready(function (e) {
                         // 按照每月统计
                         element["sum"] = sum.toFixed(2);
                     }
-                    if (JSON.stringify(element) != '{}') {
+                    if (JSON.stringify(element) !== '{}') {
                         formatData.push(element);
                     }
                 }
@@ -167,7 +164,7 @@ $(document).ready(function (e) {
             onPostHeader: function () {
                 //表单头部渲染完后执行的事件  
                 $.ajax({
-                    url: 'http://127.0.0.1:8000/Metrics/limitTypeMetrics/',
+                    url: limitTypeMetrics_url,
                     type: 'POST',
                     data: {limittype: "1"},
                     success: function (obj) {
@@ -270,7 +267,7 @@ $(document).ready(function (e) {
     });
 
     function changeYear(date) {
-        if (("" + curyear).localeCompare(date) != 0) {
+        if (("" + curyear).localeCompare(date) !== 0) {
             curyear = date;
 
             // 刷新 效率低
@@ -284,9 +281,8 @@ $(document).ready(function (e) {
         var year = getYear();
         if (year <= curyear) {
             $('#next').attr("disabled", "disabled");
-            return;
         }
-    };
+    }
 
     function getCharBarData(func) {
         let labels = [];
@@ -301,20 +297,22 @@ $(document).ready(function (e) {
             outdatas.push(0);
         }
         $.ajax({
-            url: 'http://127.0.0.1:8000/DataPresentation/DataPresentation/',
+            url: DataPresentation_url,
             type: 'POST',
             data: {year: curyear, pervyear: pervyear, type: '5'},
             success: function (obj) {
                 let data = JSON.parse(obj);
-                if (data.out) {
-                    let dataout = JSON.parse(data.out);
+                let outDataStr = data.out || data.OutCom || data.output;
+                if (outDataStr) {
+                    let dataout = JSON.parse(outDataStr);
                     for (ous in dataout) {
                         let index = labels.indexOf(parseInt(ous));
                         outdatas[index] = dataout[ous];
                     }
                 }
-                if (data.in) {
-                    let datain = JSON.parse(data.in);
+                let inDataStr = data.in || data.InCom || data.input;
+                if (inDataStr) {
+                    let datain = JSON.parse(inDataStr);
                     for (ins in datain) {
                         let index = labels.indexOf(parseInt(ins));
                         indatas[index] = datain[ins];
@@ -466,12 +464,12 @@ $(document).ready(function (e) {
                             // stacked: true,//堆叠
                         }]
                     },
-                    startAngle: 1 * Math.PI,//饼图环形图极地图开始偏转角度
-                    circumference: 1 * Math.PI,//饼图环形图允许图形覆盖                     
+                    startAngle: Math.PI,//饼图环形图极地图开始偏转角度
+                    circumference: Math.PI,//饼图环形图允许图形覆盖
                 },
             });
         }
-    };
+    }
     getCharBarData(initChartBars);
 
 });

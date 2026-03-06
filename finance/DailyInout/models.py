@@ -38,3 +38,9 @@ class Dailyinout(models.Model):
         db_table = 'dailyinout'
         verbose_name = "dailyinout"
         verbose_name_plural = 'dailyinouts'
+
+        # 添加唯一约束
+        unique_together = [
+            # 交易单号 + 交易渠道 + 金额 + 交易时间 组合唯一
+            ('merchantOrderNumbe', 'transactionChannel',  'money', 'inoutdate'),
+        ]

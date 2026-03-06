@@ -293,37 +293,39 @@ function fileImportDialogHtml() {
 function initFileImportTable(type, columns, data) {
 
     $('#fileImportTable').bootstrapTable("destroy");
-   
+    $('#fileImportTable').empty();  // 确保完全清空
     $('#fileImportTable').bootstrapTable({
-        data:data,
-        toolbar: '#toolbar',                //工具按钮用哪个容器
-        striped: true,                      //是否显示行间隔色
-        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-        pagination: true,                   //是否显示分页（*）
-        sortable: true,                    //是否启用排序
-        sortOrder: "asc",                   //排序方式
-        sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
-        pageNumber: 1,                       //初始化加载第一页，默认第一页
-        pageSize: 10,                       //每页的记录行数（*）
-        pageList: [10, 30, 50],                      //可供选择的每页的行数（*）
-        search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+        data: data,
+        toolbar: '#toolbar',
+        striped: true,
+        cache: false,
+        pagination: true,
+        sortable: true,
+        sortOrder: "asc",
+        sidePagination: "client",
+        pageNumber: 1,
+        pageSize: 10,
+        pageList: [10, 30, 50],
+        search: false,
         strictSearch: false,
-        showColumns: false,                  //是否显示所有的列
-        showRefresh: false,                  //是否显示刷新按钮
-        minimumCountColumns: 2,             //最少允许的列数
-        clickToSelect: true,                //是否启用点击选中行
-        uniqueId: "Id",                     //每一行的唯一标识，一般为主键列
+        showColumns: false,
+        showRefresh: false,
+        minimumCountColumns: 2,
+        clickToSelect: true,
+        uniqueId: "Id",
         idField: "Id",
-        showToggle: false,                    //是否显示详细视图和列表视图的切换按钮
-        cardView: false,                    //是否显示详细视图
-        detailView: false,                   //是否显示父子表
+        showToggle: false,
+        cardView: false,
+        detailView: false,
         columns: columns,
+        // 🟢 添加 onLoadSuccess 事件，在数据加载完成后清理文件输入框状态
+        onLoadSuccess: function() {
+            // 数据加载成功后，不做特殊处理
+        }
     });
 
-    $('#fileImport').click(function () {
-
-
-        if(($('#wechatImport').val()).length == 0 && ($('#ailplayImport').val()).length == 0){
+    $('#fileImport').off('click').on('click', function () {
+        if(($('#wechatImport').val()).length === 0 && ($('#ailplayImport').val()).length === 0){
             $('#fileImportPoptips').text("未选择要导入的文件!");
             return;
         }
@@ -332,20 +334,20 @@ function initFileImportTable(type, columns, data) {
         let columnsArray=options.columns[0];
         let infrastructureCode_index;
         for(let i = 0; i < columnsArray.length; i++){
-            if("科目".localeCompare(columnsArray[i].title) == 0){
+            if("科目".localeCompare(columnsArray[i].title) === 0){
                 infrastructureCode_index = columnsArray[i].field;
                 break;
             }
         } 
 
-       
-
         let dataLists = $("#fileImportTable").bootstrapTable('getData');
         // requried 
         let requriedArray = [];
-        
+
         for(let i = 0; i < dataLists.length; i++){
-            if((dataLists[i][infrastructureCode_index]).length == 0 || (dataLists[i][infrastructureCode_index]).localeCompare('null') == 0){
+            if(!dataLists[i][infrastructureCode_index] ||
+                dataLists[i][infrastructureCode_index].length === 0 ||
+                dataLists[i][infrastructureCode_index].localeCompare('null') === 0){
                 requriedArray.push(i);
             }
         }
@@ -361,37 +363,48 @@ function initFileImportTable(type, columns, data) {
         createtime = getDate();
         vaildid = '1';
 
-        if(type.localeCompare("ailplay") == 0){
+        if(type.localeCompare("ailplay") === 0){
             let aliPlayArray = [0, 2, 4, -1, -1, 9, 11, 6, "channel", 1, 11, 12, 13 ];
             for(let i = 0; i < dataLists.length; i++){
-                let dataArray = []; 
+                let dataArray = [];
                 for(let j = 0; j < aliPlayArray.length; j++){
-                    if("channel".localeCompare(aliPlayArray[j]) == 0){
+                    if("channel".localeCompare(aliPlayArray[j]) === 0){
                         dataArray.push("支付宝");
-                    }else if(aliPlayArray[j] == -1){
+                    }else if(aliPlayArray[j] === -1){
                         dataArray.push("");
+                    } else {
+                        let value = dataLists[i][aliPlayArray[j]];
+                        // 处理日期格式 - 支付宝日期在第0个位置
+                        if (j === 0 && value) {
+                            // 转换 "2026/2/26 2:29" 为 "2026-02-26 02:29:00"
+                            value = convertAlipayDate(value);
+                        }
+                        dataArray.push(value);
                     }
-                    else{
-                        dataArray.push(dataLists[i][aliPlayArray[j]]);
-                    }                    
                 }
                 dataArray.push(creatorcode);
                 dataArray.push(createtime);
                 dataArray.push(vaildid);
                 datasArray.push(dataArray);
             }
-        }else if (type.localeCompare("wechat") == 0){
+        }else if (type.localeCompare("wechat") === 0){
             let wechatArray = [0, 2, 3, -1, -1, 9, 8, 5, "channel", 1, 10, 11, 12];
             for(let i = 0; i < dataLists.length; i++){
-                let dataArray = []; 
+                let dataArray = [];
                 for(let j = 0; j < wechatArray.length; j++){
-                    if("channel".localeCompare(wechatArray[j]) == 0){
+                    if("channel".localeCompare(wechatArray[j]) === 0){
                         dataArray.push("微信");
-                    }else if(wechatArray[j] == -1){
+                    }else if(wechatArray[j] === -1){
                         dataArray.push("");
-                    }else{
-                        dataArray.push(dataLists[i][wechatArray[j]]);
-                    }  
+                    } else {
+                        let value = dataLists[i][wechatArray[j]];
+                        // 处理微信日期格式（如果需要）
+                        if (j === 0 && value) {
+                            // 微信可能是 "2026-02-26 14:30:00" 格式，如果是其他格式也需要转换
+                            value = convertWechatDate(value);
+                        }
+                        dataArray.push(value);
+                    }
                 }
                 dataArray.push(creatorcode);
                 dataArray.push(createtime);
@@ -403,63 +416,81 @@ function initFileImportTable(type, columns, data) {
      
         let data = {data: JSON.stringify(datasArray)};
         $.ajax({
-            url: "http://127.0.0.1:8000/DailyInout/blukCreate/",
+            url: DailyinoutblukCreate_url,
             type: 'POST',
             data: data,
             traditional: true,//这里设置为true
             // 上面data为提交数据，下面data形参指代的就是异步提交的返回结果data
             success: function (obj) {
                 data = JSON.parse(obj);
-                if ("1".localeCompare(data['code']) == 0) {
+                if ("1".localeCompare(data['code']) === 0) {
                     notices(data['msg']);
-                    $('#wechatImport').val("");
-                    $('#ailplayImport').val("");
-                    $('#fileImportTable').bootstrapTable("destroy");
-
-                    $('#fileImportModal').css({ display: "none" });
-                    $('#fileImportFade').css({ display: "none" });
+                    // 🟢 提交成功后完全清理
+                    resetFileImportComplete();
                 } else {
-                    $('#fileImportPoptips').text("");
                     $('#fileImportPoptips').text(data['msg']);
                 }
             },
             error: function (obj) {
-                $('#fileImportPoptips').text("");
-                $('#fileImportPoptips').text(obj);
+                $('#fileImportPoptips').text("提交失败: " + obj.statusText);
             }
         });
 
     });
 
-    $('#fileImportCancel').click(function () {
-        $('#wechatImport').val("");
-        $('#ailplayImport').val("");
-        $('#fileImportTable').bootstrapTable("destroy");
-        $('#fileImportPoptips').text("");
-    });
-    $('#fileImportclose').click(function(){
-        $('#wechatImport').val("");
-        $('#ailplayImport').val("");
-        $('#fileImportTable').bootstrapTable("destroy");
 
-        $('#fileImportModal').css({ display: "none" });
-        $('#fileImportFade').css({ display: "none" });
-        $('#fileImportPoptips').text("");
+    // 🟢 取消按钮 - 先解绑再绑定
+    $('#fileImportCancel').off('click').on('click', function() {
+        resetFileImportComplete();
     });
 
-    $('#fileImportReset').click(function () {
-        $('#wechatImport').val("");
-        $('#ailplayImport').val("");
-        $('#fileImportTable').bootstrapTable("destroy");
-        $('#fileImportPoptips').text("");
-    }); 
+    // 🟢 关闭按钮 - 先解绑再绑定
+    $('#fileImportclose').off('click').on('click', function() {
+        resetFileImportComplete();
+    });
+
+    // 🟢 重置按钮 - 先解绑再绑定
+    $('#fileImportReset').off('click').on('click', function() {
+        resetFileImportComplete();
+    });
+}
+
+/**
+ * 🟢 完全重置文件导入模块
+ */
+function resetFileImportComplete() {
+    // 1. 清空文件输入框
+    $('#wechatImport, #ailplayImport').val('');
+
+    // 2. 销毁表格
+    $('#fileImportTable').bootstrapTable("destroy");
+    $('#fileImportTable').empty();
+
+    // 3. 清空提示信息
+    $('#fileImportPoptips').text('');
+
+    // 4. 关闭模态框
+    $('#fileImportModal').css({ display: "none" });
+    $('#fileImportFade').css({ display: "none" });
+}
+
+/**
+ * 🟢 删除导入表格行
+ */
+window.deleteFileImportRow = function(element) {
+    // 使用自定义的 confirm 函数，传入删除逻辑
+    confirm(function() {
+        var uniqueId = $(element).closest('tr').data('uniqueid');
+        if (uniqueId !== undefined) {
+            $('#fileImportTable').bootstrapTable('removeByUniqueId', parseInt(uniqueId));
+        }
+    }, null); // 第二个参数可以传 null 或空数组
 };
 
 function FileImportDeleteByIds(that){
     var uniqueId = that.parentNode.parentNode.getAttribute('data-uniqueid');
     $('#fileImportTable').bootstrapTable('removeByUniqueId', parseInt(uniqueId));
-}; 
-
+}
 
 
 // -----------------------------boostarp table 结果表格 --------------------------------------------------------------
@@ -492,7 +523,6 @@ function initResultTable(queryUrl, deleteurl, method, columns, uniqueId, dialogb
         // ajaxOptions: {
         //     headers: { "Access-Control-Allow-Origin": '*' }
         // },
-        clickToSelect: true,                                   // 是否点击选中行
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
         pagination: true,                   //是否显示分页（*）
@@ -509,11 +539,10 @@ function initResultTable(queryUrl, deleteurl, method, columns, uniqueId, dialogb
         minimumCountColumns: 2,             //最少允许的列数
         clickToSelect: true,                //是否启用点击选中行
         // height: 650,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
-        uniqueId: uniqueId,                     //每一行的唯一标识，一般为主键列
+        uniqueId: uniqueId,                    //每一行的唯一标识，一般为主键列
         showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
         showFooter: true,
         showHeader: true,
-        showColumns: true,
         showPaginationSwitch: true,         // True to show the pagination switch button.
         cardView: false,                    //是否显示详细视图
         detailView: false,                  //是否显示父子表
@@ -537,7 +566,7 @@ function initResultTable(queryUrl, deleteurl, method, columns, uniqueId, dialogb
         if (seles.length > 1) {
             notices("警告！只能选择一条数据...");
             return;
-        } else if (seles.length == 0) {
+        } else if (seles.length === 0) {
             notices("警告！请选择一条数据...");
             return;
         }
@@ -572,7 +601,7 @@ function initResultTable(queryUrl, deleteurl, method, columns, uniqueId, dialogb
             if (dialogbodyObj[i].display) {
                 $($('#' + dialogbodyObj[i].id).parent().parent().parent()).css({ display: style });
             }
-        };
+        }
     }
 
     $('#copy').click(function () {
@@ -589,7 +618,7 @@ function initResultTable(queryUrl, deleteurl, method, columns, uniqueId, dialogb
         if (row.length > 1) {
             notices("警告！只能选择一条数据...");
             return;
-        } else if (row.length == 0) {
+        } else if (row.length === 0) {
             notices("警告！请选择一条数据...");
             return;
         }
@@ -601,7 +630,7 @@ function initResultTable(queryUrl, deleteurl, method, columns, uniqueId, dialogb
                 // 上面data为提交数据，下面data形参指代的就是异步提交的返回结果data
                 success: function (obj) {
                     data = JSON.parse(obj);
-                    if ("1".localeCompare(data['code']) == 0) {
+                    if ("1".localeCompare(data['code']) === 0) {
                         notices(data['msg']);
                         $('#table').bootstrapTable('removeByUniqueId', pk);
                     } else {
@@ -653,9 +682,9 @@ function initResultTable(queryUrl, deleteurl, method, columns, uniqueId, dialogb
 function linkFormatter(value, row, index) {
 
     function replacer(key, value) {        
-        if(key.localeCompare('codecodes') == 0 || key.localeCompare('remark') == 0){
+        if(key.localeCompare('codecodes') === 0 || key.localeCompare('remark') === 0){
             // replace backspace
-            if(value.indexOf(' ') != -1){
+            if(value.indexOf(' ') !== -1){
                 value = value.replace(/\s/g, "&nbsp;");
             }
         }
@@ -680,8 +709,8 @@ function emailFormatter(value, row, index) {
 }
 //性别字段格式化
 function sexFormatter(value) {
-    if (value == "女") { color = 'Red'; }
-    else if (value == "男") { color = 'Green'; }
+    if (value === "女") { color = 'Red'; }
+    else if (value === "男") { color = 'Green'; }
     else { color = 'Yellow'; }
     return '<div  style="color: ' + color + '">' + value + '</div>';
 }
@@ -700,7 +729,7 @@ var MetricsNotices;
 function getMetricsNotices(){
     // get notices info
     $.ajax({
-        url: 'http://127.0.0.1:8000/Metrics/limitTypeMetrics/',
+        url: limitTypeMetrics_url,
         type: 'POST',
         data: { limittype: "0" },
         success: function (obj) {
@@ -714,7 +743,7 @@ function getMetricsNotices(){
 
 function sumFormatter(value, ele, row, col) {
     // 支出
-    if ('out'.localeCompare(ele['codecodes__codetype']) == 0) {
+    if ('out'.localeCompare(ele['codecodes__codetype']) === 0) {
         ele.sum = - Math.abs(ele.sum);
 
     }
@@ -761,7 +790,7 @@ function FormatNotices(ele, sumlimittype, value) {
             let minLimit, maxLimit;
             let minLimitStyle, maxLimitStyle = color;
 
-            if (dayMetricsobj.length != 0) {
+            if (dayMetricsobj.length !== 0) {
                 if (dayMetricsobj[1]) {
                     minLimit = dayMetricsobj[1].limit;
                     minLimitStyle = dayMetricsobj[1].style;
@@ -790,24 +819,24 @@ function getDate() {
     str += ("0" + (mydate.getMonth() + 1)).slice(-2) + "-";
     str += ("0" + (mydate.getDate())).slice(-2);
     return str;
-};
+}
 
 function getMonth() {
     var mydate = new Date();
     var str = "" + mydate.getFullYear() + "-";
     str += ("0" + (mydate.getMonth() + 1)).slice(-2);
     return str;
-};
+}
 
 function getCurMonth() {
     var mydate = new Date();
     return ("0" + (mydate.getMonth() + 1)).slice(-2);
-};
+}
 
 function getYear() {
     var mydate = new Date();
     return mydate.getFullYear();
-};
+}
 
 function getCurrentMonthDay() {
     var date = new Date();
@@ -823,9 +852,8 @@ function getMonthDay(year, month) {
 // 计算指定时间是星期几
 function getweekday(date) {
     // date例如:'2022-03-05'
-    var weekArray = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")
-    var week = weekArray[new Date(date).getDay()]
-    return week
+    var weekArray = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
+    return weekArray[new Date(date).getDay()]
 }
 
 
@@ -836,7 +864,7 @@ function getPreMonth(yearMonth) {
 
     var year2 = year;
     var month2 = parseInt(month) - 1;
-    if (month2 == 0) {
+    if (month2 === 0) {
         //1月的上一月是前一年的12月
         year2 = parseInt(year2) - 1;
         month2 = 12;
@@ -846,8 +874,7 @@ function getPreMonth(yearMonth) {
         //10月之前都需要补0
         month2 = "0" + month2;
     }
-    var preMonth = year2 + "-" + month2;
-    return preMonth;
+    return year2 + "-" + month2;
 }
 
 
@@ -859,7 +886,7 @@ function getNextMonth(yearMonth) {
 
     var year2 = year;
     var month2 = parseInt(month) + 1;
-    if (month2 == 13) {
+    if (month2 === 13) {
         //12月的下月是下年的1月
         year2 = parseInt(year2) + 1;
         month2 = 1;
@@ -869,8 +896,7 @@ function getNextMonth(yearMonth) {
         month2 = "0" + month2;
     }
 
-    var nextMonth = year2 + "-" + month2;
-    return nextMonth;
+    return year2 + "-" + month2;
 }
 
 // true:数值型的，false：非数值型
@@ -896,8 +922,7 @@ function color16(){//十六进制颜色随机
     const r = Math.floor(Math.random()*256);
     const g = Math.floor(Math.random()*256);
     const b = Math.floor(Math.random()*256);
-    const color = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
-    return color;
+    return `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
   }
   
 
@@ -944,22 +969,22 @@ function formGroup(obj, linebreak) {
             + '<div class="form-group">'
             + '<label for="' + obj[i].id + '" class="col-lg-' + labelcol + ' col-md-' + labelcol + ' col-xs-' + labelcol + ' control-label">' + obj[i].label + '</label>'
             + '<div class="col-lg-' + tagcol + ' col-md-' + tagcol + ' col-xs-' + tagcol + '">';
-        if ('text'.localeCompare(obj[i].tag) == 0) {
+        if ('text'.localeCompare(obj[i].tag) === 0) {
             html += inputTag(obj[i].id, obj[i].placeholder);
-        } else if ('select'.localeCompare(obj[i].tag) == 0) {
+        } else if ('select'.localeCompare(obj[i].tag) === 0) {
             html += selectTag(obj[i].id, obj[i].options);
-        } else if ('textMenoy'.localeCompare(obj[i].tag) == 0) {
+        } else if ('textMenoy'.localeCompare(obj[i].tag) === 0) {
             html += inputMenoyTag(obj[i].id, obj[i].placeholder);
-        } else if ('textarea'.localeCompare(obj[i].tag) == 0) {
+        } else if ('textarea'.localeCompare(obj[i].tag) === 0) {
             html += inputtextarea(obj[i].id, obj[i].placeholder);
         }
         html += '</div></div></div>';
-        if (i != 0 && i % (linebreak - 1) == 0 || obj[i].linebreak) {
+        if (i !== 0 && i % (linebreak - 1) === 0 || obj[i].linebreak) {
             html += '<div class="clearfix"></div>';
         }
         formgrouphtml += html;
     }
-    if (obj.length % linebreak != 0) {
+    if (obj.length % linebreak !== 0) {
         formgrouphtml += '<div class="clearfix"></div>';
     }
     return formgrouphtml;
@@ -975,16 +1000,15 @@ function inputtextarea(id, placeholder) {
 
 // type="text" class="form-control  input-sm" id="' + id + '" 
 function inputMenoyTag(id, placeholder) {
-    let html = '<input type="text" class="form-control  input-sm" value="" \
+    return '<input type="text" class="form-control  input-sm" value="" \
     onkeyup="checkInput(this)" onkeydown="checkInput(this)"  onblur="checkNum(this)" id="' + id + '" + placeholder="' + placeholder + '"/>';
-    return html;
 }
 
 function checkInput(_this) {
-    if (_this.value != '' && _this.value.substr(0, 1) == '.') {
+    if (_this.value !== '' && _this.value.substr(0, 1) === '.') {
         _this.value = '0.00';
     }
-    if (_this.value == '') {
+    if (_this.value === '') {
         _this.value = '';
         return;
     }
@@ -994,9 +1018,9 @@ function checkInput(_this) {
     _this.value = _this.value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
     _this.value = _this.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); // 只能输入两个小数
 
-    if (_this.value.indexOf('.') < 0 && _this.value != '') {
+    if (_this.value.indexOf('.') < 0 && _this.value !== '') {
         // 以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
-        if (_this.value.substr(0, 1) == '0' && _this.value.length == 2) {
+        if (_this.value.substr(0, 1) === '0' && _this.value.length === 2) {
             _this.value = _this.value.substr(1, _this.value.length);
         }
     }
@@ -1007,14 +1031,14 @@ function checkInput(_this) {
 
 function checkNum(_this) {
     // 失去焦点的时候判断 如果最后一位是 . 末尾补0
-    if (_this.value == '') {
+    if (_this.value === '') {
         _this.value = '';
     }
-    else if (_this.value.indexOf('.') != -1) {
+    else if (_this.value.indexOf('.') !== -1) {
         if (_this.value.endsWith('.')) {
             _this.value += '00';
         }
-        else if (_this.value.charAt(_this.value.length - 2) == '.') {
+        else if (_this.value.charAt(_this.value.length - 2) === '.') {
             _this.value += '0';
         }
     }
@@ -1042,7 +1066,7 @@ function queryToolbarFooter(obj) {
         + '<div class="row">'
     let queryFooter = '<div class="col-xs-offset-5">';
     for (let i = 0; i < obj.length; i++) {
-        if('button'.localeCompare(obj[i].tag) == 0){
+        if('button'.localeCompare(obj[i].tag) === 0){
             queryFooter += '<button class="btn btn-primary btn-xs" id="' + obj[i].id + '">' + obj[i].desc + '</button> &nbsp;';
         }
     }
@@ -1066,7 +1090,7 @@ function initQueryToolbar($ele, title, bodyobj, footerobj, linebreak, dialogbody
             if (dialogbodyObj[i].display) {
                 $($('#' + dialogbodyObj[i].id).parent().parent().parent()).css({ display: "none" });
             }
-            if ("select".localeCompare(dialogbodyObj[i].tag) == 0) {
+            if ("select".localeCompare(dialogbodyObj[i].tag) === 0) {
                 dialogbodyObj[i].options.forEach(element => {
                     if (element.selected) {
                         $('#' + dialogbodyObj[i].id).val(element.key);
@@ -1080,7 +1104,7 @@ function initQueryToolbar($ele, title, bodyobj, footerobj, linebreak, dialogbody
 
     $('#reset').click(function () {
         for (let i = 0; i < bodyobj.length; i++) {
-            if ("select".localeCompare(bodyobj[i].tag) == 0) {
+            if ("select".localeCompare(bodyobj[i].tag) === 0) {
                 for (let j = 0; j < bodyobj[i].options.length; j++) {
                     let element = bodyobj[i].options[j]
                     if (element.selected) {
@@ -1159,7 +1183,7 @@ function initpopoveModalDialog($element, title, dialogbodyObj, linebreak, url) {
         $('#fade').css({ display: 'none' });
         for (let i = 0; i < dialogbodyObj.length; i++) {
             $('#' + dialogbodyObj[i].id).val("");
-        };
+        }
     });
 
 
@@ -1168,7 +1192,7 @@ function initpopoveModalDialog($element, title, dialogbodyObj, linebreak, url) {
         $('#fade').css({ display: 'none' });
         for (let i = 0; i < dialogbodyObj.length; i++) {
             $('#' + dialogbodyObj[i].id).val("");
-        };
+        }
     });
 
     // 确定按钮
@@ -1209,12 +1233,12 @@ function initpopoveModalDialog($element, title, dialogbodyObj, linebreak, url) {
             // 上面data为提交数据，下面data形参指代的就是异步提交的返回结果data
             success: function (obj) {
                 data = JSON.parse(obj);
-                if ("1".localeCompare(data['code']) == 0) {
+                if ("1".localeCompare(data['code']) === 0) {
                     $('#popoveModal').css({ display: 'none' });
                     $('#fade').css({ display: 'none' });
                     for (let i = 0; i < dialogbodyObj.length; i++) {
                         $('#' + dialogbodyObj[i].id).val("");
-                    };
+                    }
                     $("#table").bootstrapTable('refreshOptions', { pageNumber: 1, });
                     notices(data['msg']);
                 } else {
@@ -1226,4 +1250,53 @@ function initpopoveModalDialog($element, title, dialogbodyObj, linebreak, url) {
             }
         });
     });    
+}
+
+// 支付宝日期转换函数
+function convertAlipayDate(dateStr) {
+    if (!dateStr) return '';
+
+    // 处理 "2026/2/26 2:29" 格式
+    // 先分割日期和时间
+    let parts = dateStr.split(' ');
+    if (parts.length !== 2) return dateStr;
+
+    let datePart = parts[0]; // "2026/2/26"
+    let timePart = parts[1]; // "2:29"
+
+    // 转换日期部分为 YYYY-MM-DD
+    let dateParts = datePart.split('/');
+    if (dateParts.length === 3) {
+        let year = dateParts[0];
+        let month = dateParts[1].padStart(2, '0');
+        let day = dateParts[2].padStart(2, '0');
+        datePart = `${year}-${month}-${day}`;
+    }
+
+    // 转换时间部分为 HH:MM:SS
+    let timeParts = timePart.split(':');
+    if (timeParts.length >= 2) {
+        let hour = timeParts[0].padStart(2, '0');
+        let minute = timeParts[1].padStart(2, '0');
+        let second = timeParts.length > 2 ? timeParts[2].padStart(2, '0') : '00';
+        timePart = `${hour}:${minute}:${second}`;
+    }
+
+    return `${datePart} ${timePart}`;
+}
+
+// 微信日期转换函数（如果需要）
+function convertWechatDate(dateStr) {
+    if (!dateStr) return '';
+
+    // 如果已经是 YYYY-MM-DD HH:MM:SS 格式，直接返回
+    if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(dateStr)) {
+        return dateStr;
+    }
+
+    // 处理其他格式的微信日期
+    // 微信账单通常是 "2026-02-26 14:30:00" 格式，应该没问题
+    // 但如果出现其他格式，可以在这里处理
+
+    return dateStr;
 }

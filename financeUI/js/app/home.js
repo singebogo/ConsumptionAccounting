@@ -2,22 +2,23 @@ $(document).ready(function (e) {
 
     function initOverview(){ 
         $.ajax({
-            url: 'http://127.0.0.1:8000/Overview/everyDay/',
+            url: OverviewEveryDay_url,
             type: 'POST',
             data: { 'day': getDate() },
             // 上面data为提交数据，下面data形参指代的就是异步提交的返回结果data
             success: function (obj) {
                 data = JSON.parse(obj);
-
-                if(data['in']){
-                    data['in'].forEach(element => {
+                let inDataStr = data.in || data.InCom || data.input;
+                if(inDataStr){
+                    inDataStr.forEach(element => {
                         element = JSON.parse(element);
                         $('#todayin').text(element.today);                        
                         $('#yesterdayin').text(element.yesterday);
                     });
                 }
-                if(data['out']){
-                    data['out'].forEach(element => {
+                let outDataStr = data.out || data.OutCom || data.output;
+                if(outDataStr){
+                    outDataStr.forEach(element => {
                         element = JSON.parse(element);
                         $('#todayout').text(element.today);
                         $('#yesterdayout').text(element.yesterday);
@@ -29,18 +30,20 @@ $(document).ready(function (e) {
             },
         });
         $.ajax({
-            url: 'http://127.0.0.1:8000/Overview/curMonth/',
+            url: OverviewCurMonth_url,
             type: 'POST',
             data: { 'curYear': getYear(), 'curMonth': getCurMonth() },
             // 上面data为提交数据，下面data形参指代的就是异步提交的返回结果data
             success: function (obj) {
                 data = JSON.parse(obj);
-                if(data['in']){
-                    element = JSON.parse(data['in']);
+                let inDataStr = data.in || data.InCom || data.input;
+                if(inDataStr){
+                    element = JSON.parse(inDataStr);
                     $('#monthin').text(element.month);                        
                 }
-                if(data['out']){
-                    element = JSON.parse(data['out']);
+                let outDataStr = data.out || data.OutCom || data.output;
+                if(outDataStr){
+                    element = JSON.parse(outDataStr);
                     $('#monthout').text(element.month);
                 }     
             },
@@ -49,18 +52,20 @@ $(document).ready(function (e) {
             },
         });
         $.ajax({
-            url: 'http://127.0.0.1:8000/Overview/curYear/',
+            url: OverviewCurYear_url,
             type: 'POST',
             data: { 'curYear': getYear() },
             // 上面data为提交数据，下面data形参指代的就是异步提交的返回结果data
             success: function (obj) {
                 data = JSON.parse(obj);
-                if(data['in']){
-                    element = JSON.parse(data['in']);
+                let inDataStr = data.in || data.InCom || data.input;
+                if(inDataStr){
+                    element = JSON.parse(inDataStr);
                     $('#yearin').text(element.year);                        
                 }
-                if(data['out']){
-                    element = JSON.parse(data['out']);
+                let outDataStr = data.out || data.OutCom || data.output;
+                if(outDataStr){
+                    element = JSON.parse(outDataStr);
                     $('#yearout').text(element.year);
                 }                
             },
@@ -69,16 +74,18 @@ $(document).ready(function (e) {
             },
         });
         $.ajax({
-            url: 'http://127.0.0.1:8000/Overview/sevenDay/',
+            url: OverviewSevenDay_url,
             type: 'POST',
             data: { 'day': getDate() },
             // 上面data为提交数据，下面data形参指代的就是异步提交的返回结果data
             success: function (obj) {
                 data = JSON.parse(obj);
-                if(data['in']){
-                    element = JSON.parse(data['in']);
+                let inDataStr = data.in || data.InCom || data.input;
+                if(inDataStr){
+                    element = JSON.parse(inDataStr);
                     $('#yearin').text(element.year);                        
                 }
+                let outDataStr = data.out || data.OutCom || data.output;
                 if(data['out']){
                     element = JSON.parse(data['out']);
                     $('#yearout').text(element.year);
@@ -107,20 +114,22 @@ $(document).ready(function (e) {
         }
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/DataPresentation/DataPresentation/',
+            url: DataPresentation_url,
             type: 'POST',
             data: { year: getYear(), type:'4' },
             success: function (obj) {
                 let data = JSON.parse(obj);
-                if(data.in){
-                    let datain = JSON.parse(data.in);
+                let inDataStr = data.in || data.InCom || data.input;
+                if(inDataStr){
+                    let datain = JSON.parse(inDataStr);
                     for(ins in datain){
                         let index = labels.indexOf(ins);
                         indatas[index] = datain[ins];
                     }
                 }
-                if(data.out){
-                    let dataout = JSON.parse(data.out);
+                let outDataStr = data.out || data.OutCom || data.output;
+                if(outDataStr){
+                    let dataout = JSON.parse(outDataStr);
                     for(ous in dataout){
                         let index = labels.indexOf(ous);
                         outdatas[index] = dataout[ous];
@@ -132,7 +141,7 @@ $(document).ready(function (e) {
                 notices(JSON.parse(notices));
             }
         });
-    };
+    }
     function initEachMonthbar(labels, indatas, outdatas) {
 
         let $dashChartBarsData = {
@@ -265,8 +274,8 @@ $(document).ready(function (e) {
                             // stacked: true,//堆叠
                         }]
                     },
-                    startAngle: 1 * Math.PI,//饼图环形图极地图开始偏转角度
-                    circumference: 1 * Math.PI,//饼图环形图允许图形覆盖                     
+                    startAngle: Math.PI,//饼图环形图极地图开始偏转角度
+                    circumference: Math.PI,//饼图环形图允许图形覆盖
                 },
             });
         }            
@@ -287,20 +296,22 @@ $(document).ready(function (e) {
             outdatas.push(0);
         }
         $.ajax({
-            url: 'http://127.0.0.1:8000/DataPresentation/DataPresentation/',
+            url: DataPresentation_url,
             type: 'POST',
             data: {year: curyear, pervyear: pervyear, type: '5'},
             success: function (obj) {
                 let data = JSON.parse(obj);
-                if(data.out){
-                    let dataout = JSON.parse(data.out);
+                let outDataStr = data.out || data.OutCom || data.output;
+                if(outDataStr){
+                    let dataout = JSON.parse(outDataStr);
                     for(ous in dataout){
                         let index = labels.indexOf(parseInt(ous));
                         outdatas[index] = dataout[ous];
                     }
                 }
-                if(data.in){
-                    let datain = JSON.parse(data.in);
+                let inDataStr = data.in || data.InCom || data.input;
+                if(inDataStr){
+                    let datain = JSON.parse(inDataStr);
                     for(ins in datain){
                         let index = labels.indexOf(parseInt(ins));
                         indatas[index] = datain[ins];
@@ -447,12 +458,12 @@ $(document).ready(function (e) {
                             // stacked: true,//堆叠
                         }]
                     },
-                    startAngle: 1 * Math.PI,//饼图环形图极地图开始偏转角度
-                    circumference: 1 * Math.PI,//饼图环形图允许图形覆盖                     
+                    startAngle: Math.PI,//饼图环形图极地图开始偏转角度
+                    circumference: Math.PI,//饼图环形图允许图形覆盖
                 },
             });
         }            
-    };
+    }
 
     function curMonthEveryDay(func){       
         let curMonth = getMonth();
@@ -472,20 +483,22 @@ $(document).ready(function (e) {
             outdatas.push(0);
         }
         $.ajax({
-            url: 'http://127.0.0.1:8000/DataPresentation/DataPresentation/',
+            url: DataPresentation_url,
             type: 'POST',
             data: {year: year, month: month, type: '3'},
             success: function (obj) {
                 let data = JSON.parse(obj);
-                if(data.in){
-                    let datain = JSON.parse(data.in);
+                let inDataStr = data.in || data.InCom || data.input;
+                if(inDataStr){
+                    let datain = JSON.parse(inDataStr);
                     for(ins in datain){
                         let index = labels.indexOf(ins);
                         indatas[index] = datain[ins];
                     }
                 }
-                if(data.out){
-                    let dataout = JSON.parse(data.out);
+                let outDataStr = data.out || data.OutCom || data.output;
+                if(outDataStr){
+                    let dataout = JSON.parse(outDataStr);
                     for(ous in dataout){
                         let index = labels.indexOf(ous);
                         outdatas[index] = dataout[ous];
@@ -633,12 +646,12 @@ $(document).ready(function (e) {
                             // stacked: true,//堆叠
                         }]
                     },
-                    startAngle: 1 * Math.PI,//饼图环形图极地图开始偏转角度
-                    circumference: 1 * Math.PI,//饼图环形图允许图形覆盖                     
+                    startAngle: Math.PI,//饼图环形图极地图开始偏转角度
+                    circumference: Math.PI,//饼图环形图允许图形覆盖
                 },
             });
         }            
-    };
+    }
     
     function RevenueExpenseTypePie(callback){
         let curMonth = getMonth();
@@ -649,7 +662,7 @@ $(document).ready(function (e) {
         let backgroundColor = [];
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/DataPresentation/DataPresentation/',
+            url: DataPresentation_url,
             type: 'POST',
             data: {year: year, month: month, type: '0'},
             success: function (obj) {
@@ -661,12 +674,12 @@ $(document).ready(function (e) {
                     for(let index in values){
                         let value = values[index];
                         codetype = value['codecodes__codetype'];
-                        if('in'.localeCompare(codetype) == 0){
+                        if('in'.localeCompare(codetype) === 0){
                             break;
                         }
                         sum = sum + Math.abs(value['money']);
                     }
-                    if('in'.localeCompare(codetype) == 0){
+                    if('in'.localeCompare(codetype) === 0){
                         continue;
                     }
                     inoutlabels.push(key);
@@ -801,7 +814,7 @@ $(document).ready(function (e) {
         let backgroundColor = [];
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/DataPresentation/DataPresentation/',
+            url: DataPresentation_url,
             type: 'POST',
             data: {year: year, type: '1'},
             success: function (obj) {
@@ -950,7 +963,7 @@ $(document).ready(function (e) {
         let pervyear = year - aRound;
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/DataPresentation/DataPresentation/',
+            url: DataPresentation_url,
             type: 'POST',
             data: {year: year, pervyear:pervyear, type: '2'},
             success: function (obj) {

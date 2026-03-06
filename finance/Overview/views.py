@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.serializers import serialize
-
+from django.db.models.functions import TruncDay  # 在文件开头添加这个导入
 from django.db.models import Count, Max, Sum
 from django.db.models.functions import TruncMonth,TruncYear,ExtractYear,ExtractMonth
 from django.db import connection
@@ -45,6 +45,8 @@ def everyDay(request):
             data[codetype] = [json.dumps(todayTotal, cls=DjangoJSONEncoder) , json.dumps(yesterdayTotal, cls=DjangoJSONEncoder) ]
             
         return HttpResponse(json.dumps(data))
+    return None
+
 
 @csrf_exempt
 def curMonth(request):
@@ -62,6 +64,8 @@ def curMonth(request):
             data[codetype] = json.dumps(monthTotal, cls=DjangoJSONEncoder)
 
         return HttpResponse(json.dumps(data))
+    return None
+
 
 @csrf_exempt
 def curYear(request):
@@ -78,6 +82,7 @@ def curYear(request):
             data[codetype] = json.dumps(monthTotal, cls=DjangoJSONEncoder)
 
         return HttpResponse(json.dumps(data))
+    return None
 
 
 @csrf_exempt
@@ -86,24 +91,36 @@ def sevenDay(request):
         return HttpResponse("不支持Get请求")
     elif request.method == "POST":
         day = request.POST.get('day')
-        if(not day):
-            day = datetime.now().strftime("%Y-%m-%d")            
+        if (not day):
+            day = datetime.now().strftime("%Y-%m-%d")
         else:
             day = datetime.strptime(day, "%Y-%m-%d")
 
-        sevenday = day+ timedelta(days=-7)
-        
+        sevenday = day + timedelta(days=-7)
+
         codetypes = Codetype.objects.filter(validind__in=['1']).values_list('codetype', flat=True).distinct()
         data = {}
         for codetype in codetypes:
-            codecodes = Code.objects.filter(validind__in=['1']).filter(codetype=codetype).values_list('codecode', flat=True).distinct()
-            Dailyinoutobj = Dailyinout.objects.filter(validind__in=['1']).filter(codecodes__in=codecodes)\
-                                        .filter(inoutdate__lte = day).filter(inoutdate__gte = sevenday)          
+            codecodes = Code.objects.filter(validind__in=['1']).filter(codetype=codetype).values_list('codecode',
+                                                                                                      flat=True).distinct()
 
-            # 获取七天数据
-            select = {'day': connection.ops.datetime_trunc_sql('day', 'inoutdate', 8)}
-            severndayobj = Dailyinoutobj.extra(select=select).values('codecodes__codetype', 'codecodes', 'day')\
-                                                .annotate(money=Sum('money')).order_by("day")[0:9]
+            # 使用 TruncDay 替代 extra() 和 datetime_trunc_sql
+            severndayobj = Dailyinout.objects.filter(
+                validind__in=['1'],
+                codecodes__in=codecodes,
+                inoutdate__lte=day,
+                inoutdate__gte=sevenday
+            ).annotate(
+                day=TruncDay('inoutdate')  # 按天截断
+            ).values(
+                'codecodes__codetype',
+                'codecodes',
+                'day'
+            ).annotate(
+                money=Sum('money')
+            ).order_by('day')[:9]
+
             data[codetype] = json.dumps(list(severndayobj), cls=DjangoJSONEncoder)
-        
+
         return HttpResponse(json.dumps(data))
+    return None

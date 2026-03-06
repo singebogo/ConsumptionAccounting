@@ -36,7 +36,7 @@ $(function () {
         { tag: 'textarea', label: "备注", placeholder: "请输入", id: "remark", options: "", col: 6, labelcol: 2, tagcol: 10 },
     ];
     initQueryToolbar($('#querytoolbar'), "查询条件", bodyObj, footerObj, 5, dialogbodyObj);
-    initpopoveModalDialog($('#propve'), "新增", dialogbodyObj, 4, "http://127.0.0.1:8000/infrastruct/CodeChange/");
+    initpopoveModalDialog($('#propve'), "新增", dialogbodyObj, 4, infrastructCodeChange_url);
 
     let dateFormat = "yy-mm-dd";
 
@@ -89,24 +89,19 @@ $(function () {
 
     $('#vaildiddateQuery').datepicker({ "dateFormat": "yy-mm-dd" });
 
-    var queryUrl = 'http://127.0.0.1:8000/infrastruct/CodeAll/';
-    var deleteUrl = 'http://127.0.0.1:8000/infrastruct/CodeDelete/';
-
-
     $('#date').datepicker({ "dateFormat": "yy-mm-dd", });
     $('#vaildiddate').datepicker({ "dateFormat": "yy-mm-dd", });
 
     function queryParamsFun(params) {
         //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
-        var temp = {
+        return {
             codetypeQuery: $('#codetypeQuery').val(),
             codecodeQuery: $('#codecodeQuery').val(),
             enddateQuery: $('#end-date').val(),
             startdateQuery: $('#start-date').val(),
             validindQuery: $('#validindQuery').val(),
         };
-        return temp;
-    };
+    }
 
     function onLoadSuccessFun() {
 
@@ -189,7 +184,7 @@ $(function () {
         // },
     ];
 
-    initResultTable(queryUrl, deleteUrl, "POST", columns, 'codecode', dialogbodyObj, queryParamsFun, onLoadSuccessFun, onLoadErrorFun);
+    initResultTable(infrastructQuery_url, infrastructdelete_url, "POST", columns, 'codecode', dialogbodyObj, queryParamsFun, onLoadSuccessFun, onLoadErrorFun);
 
 
     // about query
@@ -234,7 +229,7 @@ $(function () {
         // 查询条件初始化
         $('#selectCode').val($('#codetypeQuery').val());
 
-        initDbSelect("http://127.0.0.1:8000/infrastruct/vaildCodeTypeQuery/", $(this));
+        initDbSelect(DailyinoutCodeTypeQuery_url, $(this));
     });
 
     $('#codetype_id').dblclick(function () {
@@ -244,7 +239,7 @@ $(function () {
         // 查询条件初始化
         $('#selectCode').val($('#codetype').val());
 
-        initDbSelect("http://127.0.0.1:8000/infrastruct/vaildCodeTypeQuery/", $(this));
+        initDbSelect(DailyinoutCodeQuery_url, $(this));
     });
 
 
@@ -255,18 +250,18 @@ $(function () {
         // 查询条件初始化
         $('#selectCode').val($('#codecodeQuery').val());
 
-        initDbSelect("http://127.0.0.1:8000/infrastruct/vaildCodeQuery/", $(this));
+        initDbSelect(DailyinoutCodeQuery_url, $(this));
     });
 
     $("#codetype").change(function () {
         $.ajax({
-            url: 'http://127.0.0.1:8000/infrastruct/CodeTypeIsExist/',
+            url: infrastructCodeTypeIsExist_url,
             type: 'POST',
             data: { 'codetype': $(this).val() },
             // 上面data为提交数据，下面data形参指代的就是异步提交的返回结果data
             success: function (obj) {
                 data = JSON.parse(obj);
-                if ("1".localeCompare(data['code']) != 0) {
+                if ("1".localeCompare(data['code']) !== 0) {
                     $('#poptips').text(data['msg']);
                 } else {
                     $('#poptips').text("");
@@ -279,17 +274,17 @@ $(function () {
     });
 
     $("#codecode").change(function () {
-        if (($(this).val()).length == 0) {
+        if (($(this).val()).length === 0) {
             $('#poptips').text("");
         }
         $.ajax({
-            url: 'http://127.0.0.1:8000/infrastruct/CodeIsExist/',
+            url: infrastructCodeIsExist_url,
             type: 'POST',
             data: { 'codecode': $(this).val() },
             // 上面data为提交数据，下面data形参指代的就是异步提交的返回结果data
             success: function (obj) {
                 data = JSON.parse(obj);
-                if ("1".localeCompare(data['code']) == 0) {
+                if ("1".localeCompare(data['code']) === 0) {
                     $('#poptips').text(data['msg']);
                 } else {
                     $('#poptips').text("");

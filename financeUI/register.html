@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <title>注册 · 记账后台管理系统</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+
+  <!-- Font Awesome 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <!-- 谷歌字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* 🌈 渐变背景 */
+    .register-container {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6b8cff 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* 动态波浪背景 */
+    .wave-bg {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 200px;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,186.7C672,192,768,224,864,234.7C960,245,1056,235,1152,202.7C1248,171,1344,117,1392,90.7L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+      background-size: cover;
+      background-repeat: no-repeat;
+      opacity: 0.6;
+    }
+
+    /* 注册卡片 */
+    .register-card {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease;
+      z-index: 10;
+    }
+
+    /* 左侧品牌区 */
+    .brand-side {
+      flex: 1;
+      background: linear-gradient(145deg, #1a1f2e 0%, #2d3748 100%);
+      padding: 48px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-side::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .brand-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-icon {
+      font-size: 48px;
+      color: #667eea;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 24px;
+    }
+
+    .brand-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+
+    .brand-subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+    }
+
+    /* 右侧表单区 */
+    .form-side {
+      flex: 1;
+      padding: 48px 40px;
+      background: white;
+    }
+
+    .form-header {
+      margin-bottom: 32px;
+    }
+
+    .form-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1f2e;
+      margin-bottom: 8px;
+    }
+
+    .form-subtitle {
+      font-size: 15px;
+      color: #718096;
+    }
+
+    .form-subtitle a {
+      color: #667eea;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .form-subtitle a:hover {
+      color: #764ba2;
+    }
+
+    /* 表单组 */
+    .form-group-custom {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+      font-size: 16px;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+
+    .form-control-custom {
+      width: 100%;
+      height: 52px;
+      padding: 12px 16px 12px 48px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 15px;
+      transition: all 0.3s;
+      background: #f8fafc;
+    }
+
+    .form-control-custom:focus {
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      outline: none;
+    }
+
+    .form-control-custom.is-invalid {
+      border-color: #fc8181;
+      background: #fff5f5;
+    }
+
+    .invalid-feedback {
+      color: #e53e3e;
+      font-size: 13px;
+      margin-top: 6px;
+      padding-left: 16px;
+    }
+
+    /* 密码强度指示器 */
+    .password-strength {
+      margin-top: 8px;
+      height: 6px;
+      border-radius: 3px;
+      background: #edf2f7;
+      overflow: hidden;
+    }
+
+    .strength-bar {
+      height: 100%;
+      width: 0;
+      transition: all 0.3s;
+      border-radius: 3px;
+    }
+
+    .strength-text {
+      font-size: 12px;
+      margin-top: 4px;
+      color: #718096;
+    }
+
+    /* 协议勾选 */
+    .agree-checkbox {
+      display: flex;
+      align-items: center;
+      margin: 24px 0;
+      cursor: pointer;
+    }
+
+    .checkbox-custom {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .checkbox-custom i {
+      color: white;
+      font-size: 12px;
+      opacity: 0;
+      transition: all 0.2s;
+    }
+
+    .agree-checkbox input {
+      display: none;
+    }
+
+    .agree-checkbox input:checked + .checkbox-custom {
+      background: #667eea;
+      border-color: #667eea;
+    }
+
+    .agree-checkbox input:checked + .checkbox-custom i {
+      opacity: 1;
+    }
+
+    /* 注册按钮 */
+    .btn-register {
+      width: 100%;
+      height: 52px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 16px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-register i {
+      margin-right: 8px;
+      transition: transform 0.3s;
+    }
+
+    .btn-register:hover i {
+      transform: translateX(4px);
+    }
+
+    .btn-register:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* 提示消息 */
+    .alert-message {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      animation: slideIn 0.3s ease;
+    }
+
+    .alert-message i {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .alert-error {
+      background: #fff5f5;
+      color: #c53030;
+      border: 1px solid #fed7d7;
+    }
+
+    .alert-success {
+      background: #f0fff4;
+      color: #276749;
+      border: 1px solid #c6f6d5;
+    }
+
+    .alert-info {
+      background: #ebf8ff;
+      color: #2c5282;
+      border: 1px solid #bee3f8;
+    }
+
+    /* 登录链接 */
+    .login-link {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #667eea;
+      font-weight: 600;
+      text-decoration: none;
+      margin-left: 6px;
+    }
+
+    .login-link a:hover {
+      color: #764ba2;
+    }
+
+    /* 动画 */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .register-card {
+        flex-direction: column;
+      }
+
+      .brand-side {
+        padding: 32px 24px;
+      }
+
+      .form-side {
+        padding: 32px 24px;
+      }
+
+      .brand-title {
+        font-size: 28px;
+      }
+
+      .form-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="register-container">
+  <div class="wave-bg"></div>
+
+  <div class="register-card animate__animated animate__fadeIn">
+    <!-- 左侧品牌区 -->
+    <div class="brand-side">
+      <div class="brand-content">
+        <div class="brand-icon">
+          <i class="fas fa-chart-pie fa-3x"></i>
+        </div>
+        <div class="brand-title">加入我们</div>
+        <div class="brand-subtitle">
+          开启智能财务管理之旅<br>
+          已有超过 10,000+ 用户选择我们
+        </div>
+      </div>
+
+      <div style="margin-top: 40px;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px; color: rgba(255,255,255,0.8);">
+          <i class="fas fa-check-circle" style="color: #4ade80; margin-right: 12px;"></i>
+          <span>30天免费试用</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 20px; color: rgba(255,255,255,0.8);">
+          <i class="fas fa-check-circle" style="color: #4ade80; margin-right: 12px;"></i>
+          <span>7x24小时技术支持</span>
+        </div>
+        <div style="display: flex; align-items: center; color: rgba(255,255,255,0.8);">
+          <i class="fas fa-check-circle" style="color: #4ade80; margin-right: 12px;"></i>
+          <span>无条件退款保证</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧注册表单区 -->
+    <div class="form-side">
+      <div class="form-header">
+        <h2 class="form-title">创建新账号</h2>
+        <p class="form-subtitle">
+          已有账号？<a href="/login">立即登录</a>
+        </p>
+      </div>
+
+      <!-- 提示信息 -->
+      <div id="notices"></div>
+
+      <!-- 注册表单 -->
+      <form id="registerForm" method="post">
+        <div class="form-group-custom">
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" class="form-control-custom" id="username" name="username"
+                 placeholder="用户名" autocomplete="username" autofocus>
+          <div class="invalid-feedback" id="usernameError"></div>
+        </div>
+
+        <div class="form-group-custom">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" class="form-control-custom" id="email" name="email"
+                 placeholder="电子邮箱（选填）" autocomplete="email">
+        </div>
+
+        <div class="form-group-custom">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" class="form-control-custom" id="password1" name="password1"
+                 placeholder="密码" autocomplete="new-password">
+          <!-- 密码强度 -->
+          <div class="password-strength">
+            <div class="strength-bar" id="strengthBar"></div>
+          </div>
+          <div class="strength-text" id="strengthText">请输入密码</div>
+          <div class="invalid-feedback" id="password1Error"></div>
+        </div>
+
+        <div class="form-group-custom">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" class="form-control-custom" id="password2" name="password2"
+                 placeholder="确认密码" autocomplete="new-password">
+          <div class="invalid-feedback" id="password2Error"></div>
+        </div>
+
+        <!-- 用户协议 -->
+        <label class="agree-checkbox">
+          <input type="checkbox" id="agreeTerms" checked>
+          <span class="checkbox-custom">
+                            <i class="fas fa-check"></i>
+                        </span>
+          <span style="font-size: 14px; color: #4a5568;">
+                            我已阅读并同意 <a href="#" style="color: #667eea; text-decoration: none;">用户协议</a> 和
+                            <a href="#" style="color: #667eea; text-decoration: none;">隐私政策</a>
+                        </span>
+        </label>
+
+        <button type="submit" class="btn-register" id="registerBtn">
+          <i class="fas fa-user-plus"></i>
+          立即注册
+        </button>
+
+        <div class="login-link">
+          注册即表示同意我们的
+          <a href="#">服务条款</a> 和
+          <a href="#">隐私声明</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./js/utils/constantUtils.js"></script>
+<script>
+  $(function() {
+    // 输入框焦点动画
+    $('.form-control-custom').on('focus', function() {
+      $(this).siblings('.input-icon').css('color', '#667eea');
+    }).on('blur', function() {
+      $(this).siblings('.input-icon').css('color', '#a0aec0');
+    });
+
+    // 密码强度检测
+    $('#password1').on('input', function() {
+      var password = $(this).val();
+      var strength = 0;
+      var bar = $('#strengthBar');
+      var text = $('#strengthText');
+
+      if (password.length >= 6) strength += 25;
+      if (password.length >= 8) strength += 15;
+      if (/[a-z]/.test(password)) strength += 15;
+      if (/[A-Z]/.test(password)) strength += 15;
+      if (/[0-9]/.test(password)) strength += 15;
+      if (/[^a-zA-Z0-9]/.test(password)) strength += 15;
+
+      strength = Math.min(strength, 100);
+      bar.css('width', strength + '%');
+
+      if (strength < 30) {
+        bar.css('background', '#fc8181');
+        text.text('密码强度：弱').css('color', '#e53e3e');
+      } else if (strength < 60) {
+        bar.css('background', '#fbbf24');
+        text.text('密码强度：中').css('color', '#b45309');
+      } else {
+        bar.css('background', '#4ade80');
+        text.text('密码强度：强').css('color', '#276749');
+      }
+
+      if (password.length === 0) {
+        bar.css('width', '0');
+        text.text('请输入密码').css('color', '#718096');
+      }
+    });
+
+    // 实时确认密码匹配
+    $('#password2').on('input', function() {
+      var pwd1 = $('#password1').val();
+      var pwd2 = $(this).val();
+
+      if (pwd2.length > 0) {
+        if (pwd1 !== pwd2) {
+          $(this).addClass('is-invalid');
+          $('#password2Error').text('两次输入的密码不一致');
+        } else {
+          $(this).removeClass('is-invalid');
+          $('#password2Error').text('');
+        }
+      } else {
+        $(this).removeClass('is-invalid');
+        $('#password2Error').text('');
+      }
+    });
+
+    // 表单提交
+    $('#registerForm').on('submit', function(e) {
+      e.preventDefault();
+
+      // 表单验证
+      var username = $('#username').val().trim();
+      var password1 = $('#password1').val();
+      var password2 = $('#password2').val();
+      var agreeTerms = $('#agreeTerms').is(':checked');
+
+      // 清除旧错误状态
+      $('.form-control-custom').removeClass('is-invalid');
+      $('.invalid-feedback').text('');
+
+      var isValid = true;
+
+      if (!username) {
+        $('#username').addClass('is-invalid');
+        $('#usernameError').text('请输入用户名');
+        isValid = false;
+      } else if (username.length < 3) {
+        $('#username').addClass('is-invalid');
+        $('#usernameError').text('用户名至少3个字符');
+        isValid = false;
+      }
+
+      if (!password1) {
+        $('#password1').addClass('is-invalid');
+        $('#password1Error').text('请输入密码');
+        isValid = false;
+      } else if (password1.length < 6) {
+        $('#password1').addClass('is-invalid');
+        $('#password1Error').text('密码至少6位');
+        isValid = false;
+      }
+
+      if (!password2) {
+        $('#password2').addClass('is-invalid');
+        $('#password2Error').text('请确认密码');
+        isValid = false;
+      } else if (password1 !== password2) {
+        $('#password2').addClass('is-invalid');
+        $('#password2Error').text('两次输入的密码不一致');
+        isValid = false;
+      }
+
+      if (!agreeTerms) {
+        notices('请阅读并同意用户协议和隐私政策', 'error');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // 提交按钮状态
+      var $btn = $('#registerBtn');
+      $btn.html('<i class="fas fa-spinner fa-spin"></i> 注册中...')
+              .attr('disabled', true);
+
+      // AJAX提交
+      $.ajax({
+        url: reg_url,  // 确保这个URL与urls.py配置一致
+        type: 'POST',
+        data: {
+          username: username,
+          password1: password1,
+          password2: password2,
+          email: $('#email').val(),
+        },
+        success: function(res) {
+          if (res.code === '1') {
+            notices(res.msg, 'success');
+            // 注册成功，跳转到登录页或直接登录
+            setTimeout(function() {
+              if (res.redirect) {
+                window.location.href = res.redirect;
+              } else {
+                window.location.href = './index.html';
+              }
+            }, 1500);
+          } else {
+            notices(res.msg, 'error');
+            $btn.html('<i class="fas fa-user-plus"></i> 立即注册')
+                    .attr('disabled', false);
+          }
+        },
+        error: function(xhr) {
+          var msg = '注册失败，请稍后重试';
+          if (xhr.responseJSON && xhr.responseJSON.msg) {
+            msg = xhr.responseJSON.msg;
+          }
+          notices(msg, 'error');
+          $btn.html('<i class="fas fa-user-plus"></i> 立即注册')
+                  .attr('disabled', false);
+        }
+      });
+    });
+
+    // 提示消息函数
+    window.notices = function(msg, type = 'error') {
+      var icon = 'fa-exclamation-circle';
+      var className = 'alert-error';
+
+      if (type === 'success') {
+        icon = 'fa-check-circle';
+        className = 'alert-success';
+      } else if (type === 'info') {
+        icon = 'fa-info-circle';
+        className = 'alert-info';
+      }
+
+      var html = '<div class="alert-message ' + className + ' animate__animated animate__fadeInLeft">' +
+              '<i class="fas ' + icon + '"></i>' +
+              '<span>' + msg + '</span>' +
+              '</div>';
+
+      $('#notices').html(html);
+
+      setTimeout(function() {
+        $('#notices .alert-message').fadeOut(300, function() {
+          $(this).remove();
+        });
+      }, 3000);
+    };
+  });
+</script>
+</body>
+
+</html>

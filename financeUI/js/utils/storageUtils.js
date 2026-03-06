@@ -1,5 +1,5 @@
 
-const USER_KEY = 'user_key'
+const USER_KEY = 'user'
 
 function saveUser(user){
     localStorage.setItem(USER_KEY, JSON.stringify(user))
