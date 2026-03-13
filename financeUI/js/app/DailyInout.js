@@ -272,18 +272,29 @@ $(function () {
         }
         $('#fileImportPoptips').text('');
 
+        // 🟢 打开对话框时，同时清空两个文件输入框
+        $('#wechatImport, #ailplayImport').val('');
+
         $('#fileImportModal').css({ display: "block" });
         $('#fileImportFade').css({ display: "block" });
     });
 
     $('#wechatImport').change(function (e) {
-        $('#fileImportTable').bootstrapTable("destroy");
-        readFile(e, "wechat", '微信昵称', '微信支付账单明细列表', "");
+        // 🟢 如果微信文件选择框有值，清空支付宝文件选择框
+        if ($(this).val()) {
+            $('#ailplayImport').val('');
+            $('#fileImportTable').bootstrapTable("destroy");
+            readFile(e, "wechat", '微信昵称', '微信支付账单明细列表', "");
+        }
     });
 
     $('#ailplayImport').change(function (e) {
-        $('#fileImportTable').bootstrapTable("destroy");
-        readFile(e, "ailplay", '姓名', '电子客户回单', "");
+        // 🟢 如果支付宝文件选择框有值，清空微信文件选择框
+        if ($(this).val()) {
+            $('#wechatImport').val('');
+            $('#fileImportTable').bootstrapTable("destroy");
+            readFile(e, "ailplay", '姓名', '电子客户回单', "");
+        }
     });
 
 
@@ -299,6 +310,11 @@ $(function () {
         // 1. 检查是否选择了文件
         if (!e.target.files || !e.target.files[0]) {
             $('#fileImportPoptips').text("❌ 未选择要导入的文件！");
+            return;
+        }
+
+        // 🟢 额外检查：确保当前选择的文件输入框有值，如果没有值则不处理
+        if (!$(e.target).val()) {
             return;
         }
 
@@ -691,7 +707,63 @@ $(function () {
             console.error("科目数据请求异常:", e);
         }
 
-        // ========== 6. 构建表格列定义 ==========
+        // ========== 6. 获取列索引映射（根据实际列名动态匹配） ==========
+        function getColumnIndexMap(colNames, type) {
+            let map = {};
+
+            // 默认索引（如果匹配失败使用默认值）
+            const defaultMap = type === 'wechat' ? COLUMN_INDEX.WECHAT : COLUMN_INDEX.AILPLAY;
+
+            // 遍历列名，尝试匹配
+            for (let i = 0; i < colNames.length; i++) {
+                let colName = colNames[i].trim();
+
+                // 根据关键词匹配列索引
+                if (colName.indexOf('交易时间') !== -1 || colName.indexOf('时间') !== -1) {
+                    map.TIME = i;
+                } else if (colName.indexOf('交易类型') !== -1 || colName.indexOf('类型') !== -1) {
+                    map.TYPE = i;
+                } else if (colName.indexOf('交易对方') !== -1 || colName.indexOf('对方') !== -1) {
+                    map.PARTNER = i;
+                } else if (colName.indexOf('商品') !== -1 || colName.indexOf('说明') !== -1) {
+                    map.PRODUCT = i;
+                } else if (colName.indexOf('收/支') !== -1 || colName.indexOf('收支') !== -1) {
+                    map.INOUT = i;
+                } else if (colName.indexOf('金额') !== -1) {
+                    map.AMOUNT = i;
+                } else if (colName.indexOf('支付方式') !== -1 || colName.indexOf('方式') !== -1) {
+                    map.PAYMENT = i;
+                } else if (colName.indexOf('状态') !== -1) {
+                    map.STATUS = i;
+                } else if (colName.indexOf('交易单号') !== -1 || colName.indexOf('订单号') !== -1) {
+                    map.ORDER_ID = i;
+                } else if (colName.indexOf('商户单号') !== -1 || colName.indexOf('商户订单') !== -1) {
+                    map.MERCHANT_ID = i;
+                } else if (colName.indexOf('备注') !== -1) {
+                    map.NOTE = i;
+                }
+            }
+
+            // 补全缺失的索引（使用默认值）
+            return {
+                TIME: map.TIME !== undefined ? map.TIME : defaultMap.TIME,
+                TYPE: map.TYPE !== undefined ? map.TYPE : defaultMap.TYPE,
+                PARTNER: map.PARTNER !== undefined ? map.PARTNER : defaultMap.PARTNER,
+                PRODUCT: map.PRODUCT !== undefined ? map.PRODUCT : defaultMap.PRODUCT,
+                INOUT: map.INOUT !== undefined ? map.INOUT : defaultMap.INOUT,
+                AMOUNT: map.AMOUNT !== undefined ? map.AMOUNT : defaultMap.AMOUNT,
+                PAYMENT: map.PAYMENT !== undefined ? map.PAYMENT : defaultMap.PAYMENT,
+                STATUS: map.STATUS !== undefined ? map.STATUS : defaultMap.STATUS,
+                ORDER_ID: map.ORDER_ID !== undefined ? map.ORDER_ID : defaultMap.ORDER_ID,
+                MERCHANT_ID: map.MERCHANT_ID !== undefined ? map.MERCHANT_ID : defaultMap.MERCHANT_ID,
+                NOTE: map.NOTE !== undefined ? map.NOTE : defaultMap.NOTE
+            };
+        }
+
+        // 获取当前账单类型的列索引映射
+        let currentColumns = getColumnIndexMap(colNames, type);
+
+        // ========== 7. 构建表格列定义 ==========
         let columns = [
             {
                 field: 'Id',
@@ -704,43 +776,72 @@ $(function () {
             }
         ];
 
+        // 定义基础宽度（像素）
+        const BASE_WIDTH = 80;      // 普通列基础宽度
+        const DOUBLE_WIDTH = 160;   // 双倍宽度
+
         // 根据列名动态创建列
         for (let i = 0; i < colNames.length; i++) {
             let colTitle = colNames[i].trim();
 
+            // 判断当前列的索引对应的字段类型
+            let fieldType = '';
+            let isDoubleWidth = false;
+
+            // 根据索引判断字段类型
+            if (i === currentColumns.ORDER_ID) {
+                fieldType = 'order_id';
+                isDoubleWidth = true;  // 交易单号双倍宽度
+            } else if (i === currentColumns.MERCHANT_ID) {
+                fieldType = 'merchant_id';
+                isDoubleWidth = true;  // 商户单号双倍宽度
+            } else if (i === currentColumns.NOTE) {
+                fieldType = 'note';
+                isDoubleWidth = true;  // 备注双倍宽度
+            } else if (i === currentColumns.PRODUCT) {
+                fieldType = 'product';
+                isDoubleWidth = true;  // 商品双倍宽度
+            } else if (i === currentColumns.AMOUNT) {
+                fieldType = 'amount';
+            } else if (i === currentColumns.TIME) {
+                fieldType = 'time';
+            }
+
             // 根据不同字段类型设置不同的编辑/显示属性
-            if (colTitle.indexOf('金额') !== -1 || colTitle.indexOf('Amount') !== -1) {
+            if (fieldType === 'amount') {
                 // 金额列
                 columns.push({
                     field: i.toString(),
                     title: colTitle,
                     align: 'right',
-                    width: 100,
+                    width: BASE_WIDTH,
                     formatter: function(value) {
                         return value ? `¥${parseFloat(value).toFixed(2)}` : '¥0.00';
                     }
                 });
             }
-            else if (colTitle.indexOf('时间') !== -1 || colTitle.indexOf('Date') !== -1) {
+            else if (fieldType === 'time') {
                 // 时间列
                 columns.push({
                     field: i.toString(),
                     title: colTitle,
                     align: 'center',
-                    width: 160,
+                    width: BASE_WIDTH + 40,  // 时间列稍宽
                     formatter: function(value) {
                         return value || '--';
                     }
                 });
             }
-            else if (colTitle.indexOf('备注') !== -1 || colTitle.indexOf('Note') !== -1) {
-                // 备注列 - 可编辑
+            else if (fieldType === 'order_id' || fieldType === 'merchant_id' ||
+                fieldType === 'note' || fieldType === 'product') {
+                // 🟢 双倍宽度列：交易单号、商户单号、备注、商品
                 columns.push({
                     field: i.toString(),
                     title: colTitle,
                     align: 'left',
-                    width: 200,
-                    editable: {
+                    width: DOUBLE_WIDTH,
+                    // 如果是备注列，添加编辑功能
+                    editable: fieldType === 'note' ? {
                         type: 'text',
                         title: colTitle,
                         emptytext: '--',
@@ -749,18 +850,24 @@ $(function () {
                             $(this).attr('data-value', value || '');
                             return '';
                         }
-                    },
+                    } : undefined,
                     formatter: function(value) {
-                        return value || '--';
+                        if (!value) return '--';
+                        // 对于长内容，添加截断和提示
+                        if (value.length > 30) {
+                            return '<span title="' + value + '">' + value.substring(0, 27) + '...</span>';
+                        }
+                        return value;
                     }
                 });
             }
             else {
-                // 普通列 - 只读
+                // 普通列 - 基础宽度
                 columns.push({
                     field: i.toString(),
                     title: colTitle,
                     align: 'left',
+                    width: BASE_WIDTH,
                     formatter: function(value) {
                         return value || '--';
                     }
@@ -773,18 +880,18 @@ $(function () {
             field: (colNames.length).toString(),
             title: type === 'wechat' ? '微信昵称' : '支付宝姓名',
             align: 'left',
-            width: 150,
+            width: BASE_WIDTH + 20,
             formatter: function(value) {
                 return value || '--';
             }
         });
 
-        // 添加科目列（可编辑下拉框）
+        // 添加科目列（可编辑下拉框）- 中等宽度
         columns.push({
             field: (colNames.length + 1).toString(),
             title: '科目',
             align: 'left',
-            width: 150,
+            width: BASE_WIDTH + 40,
             editable: {
                 type: 'select',
                 title: '科目',
@@ -815,22 +922,21 @@ $(function () {
             }
         });
 
-        // 添加操作列（删除按钮）
+        // 添加操作列（删除按钮）- 固定宽度
         columns.push({
             field: 'action',
             title: '操作',
             align: 'center',
-            width: 80,
+            width: 60,
             formatter: function(value, row, index) {
                 return '<a href="javascript:void(0);" class="btn btn-xs btn-danger" ' +
                     'onclick="deleteFileImportRow(this)" title="删除">' +
-                    '<span class="glyphicon glyphicon-trash"></span> 删除</a>';
+                    '<span class="glyphicon glyphicon-trash"></span> 删</a>';
             }
         });
 
-        // ========== 7. 解析账单数据行（核心：按列索引精确清理） ==========
+        // ========== 8. 解析账单数据行（核心：按列索引精确清理） ==========
         let billDatas = [];
-        let currentColumns = type === 'wechat' ? COLUMN_INDEX.WECHAT : COLUMN_INDEX.AILPLAY;
 
         // 数据行从起始行+2开始（跳过列名行）
         for (let rowIdx = billStartIndex + 2, id = 0; rowIdx < billEndIndex; rowIdx++, id++) {
@@ -838,6 +944,7 @@ $(function () {
 
             // 跳过空行
             if (!line || line.trim().length === 0) {
+                id--; // 不增加ID计数
                 continue;
             }
 
@@ -846,6 +953,7 @@ $(function () {
 
             // 跳过全空行
             if (fields.length === 0 || (fields.length === 1 && fields[0] === '')) {
+                id--;
                 continue;
             }
 
@@ -892,13 +1000,12 @@ $(function () {
             billDatas.push(billdata);
         }
 
-        // ========== 8. 初始化导入表格 ==========
+        // ========== 9. 初始化导入表格 ==========
         if (billDatas.length === 0) {
             $('#fileImportPoptips').text("⚠️ 未解析到任何账单数据");
             return;
         }
 
-        // 在 dataImportFormat 函数的末尾，调用 initFileImportTable 之前
         $('#fileImportPoptips').text(`✅ 解析成功，共 ${billDatas.length} 条账单记录`);
 
         // 🟢 先清理旧的事件绑定和数据
@@ -910,6 +1017,5 @@ $(function () {
         // 调用初始化表格函数
         initFileImportTable(type, columns, billDatas);
     }
-
 
 });

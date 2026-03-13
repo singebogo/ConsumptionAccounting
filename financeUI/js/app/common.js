@@ -286,7 +286,7 @@ function fileImportDialogHtml() {
     </div> \
 </div> ';
     return dialogHtml;
-};
+}
 
 // 初始化账单导入
 
@@ -296,7 +296,7 @@ function initFileImportTable(type, columns, data) {
     $('#fileImportTable').empty();  // 确保完全清空
     $('#fileImportTable').bootstrapTable({
         data: data,
-        toolbar: '#toolbar',
+        columns: columns,
         striped: true,
         cache: false,
         pagination: true,
@@ -306,23 +306,69 @@ function initFileImportTable(type, columns, data) {
         pageNumber: 1,
         pageSize: 10,
         pageList: [10, 30, 50],
-        search: false,
-        strictSearch: false,
-        showColumns: false,
-        showRefresh: false,
-        minimumCountColumns: 2,
+        search: true,
+        showColumns: true,
+        showRefresh: true,
         clickToSelect: true,
         uniqueId: "Id",
-        idField: "Id",
-        showToggle: false,
-        cardView: false,
-        detailView: false,
-        columns: columns,
-        // 🟢 添加 onLoadSuccess 事件，在数据加载完成后清理文件输入框状态
+        height: 600,
+        // 添加表格样式
+        tableWidth: '100%',
+        // 固定表头
+        fixedColumns: true,
+        fixedNumber: 2,  // 固定前2列（ID和第一列数据）
+        // 🟢 单元格样式 - 允许折行
+        cellStyle: function(value, row, index, field) {
+            return {
+                css: {
+                    'white-space': 'normal',      // 允许折行
+                    'word-wrap': 'break-word',     // 长单词折行
+                    'word-break': 'break-all',     // 强制折行
+                    'max-width': '100%',            // 最大宽度
+                    'overflow': 'visible'           // 显示全部内容
+                }
+            };
+        },
+        // 🟢 行样式
+        rowStyle: function(row, index) {
+            return {
+                css: {
+                    'max-height': 'none',           // 不限制高度
+                    'overflow': 'visible'           // 显示全部内容
+                }
+            };
+        },
         onLoadSuccess: function() {
-            // 数据加载成功后，不做特殊处理
+            // 加载成功后调整列宽
+            $('#fileImportTable').bootstrapTable('resetView');
+
+            // 🟢 添加自定义样式到表格容器
+            $('.fixed-table-body').css({
+                'overflow-x': 'auto',
+                'overflow-y': 'auto'
+            });
+        },
+        // 🟢 列宽设置（确保列宽不被内容撑爆）
+        onPostBody: function() {
+            // 确保表格容器允许折行
+            $('#fileImportTable').css({
+                'table-layout': 'fixed',           // 固定表格布局
+                'width': '100%'
+            });
+
+            // 为每个单元格添加样式
+            $('#fileImportTable td').css({
+                'white-space': 'normal',
+                'word-wrap': 'break-word',
+                'word-break': 'break-all'
+            });
         }
     });
+    // 可选：添加表格容器样式
+    // $('.fixed-table-container').css({
+    //     'border-radius': '8px',
+    //     'overflow': 'auto'
+    // });
 
     $('#fileImport').off('click').on('click', function () {
         if(($('#wechatImport').val()).length === 0 && ($('#ailplayImport').val()).length === 0){
@@ -510,7 +556,7 @@ function resultTableHtml() {
         + '<button class="btn btn-primary btn-xs" id="copy">复制</button>'
         + '</div>'
         + '</div>';
-};
+}
 
 //初始化bootstrap-table的内容
 function initResultTable(queryUrl, deleteurl, method, columns, uniqueId, dialogbodyObj, queryParamsFun, onLoadSuccessFun, onLoadErrorFun) {
@@ -668,13 +714,13 @@ function initResultTable(queryUrl, deleteurl, method, columns, uniqueId, dialogb
             if (dialogbodyObj[i].display) {
                 $($('#' + dialogbodyObj[i].id).parent().parent().parent()).css({ display: "block" });
             }
-        };
+        }
 
         $.each(tags, function (i, item) {
             $(item).attr("disabled", "disabled");
         });
     });
-};
+}
 
 
 // -----------------------------boostarp table columns format--------------------------------------------------------------

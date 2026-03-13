@@ -192,32 +192,25 @@ jQuery(document).ready(function () {
 	$('#logout').on('click', function(e) {
 		e.preventDefault();
 
-		$.confirm({
-			title: '确认退出',
-			content: '确定要退出登录吗？',
-			buttons: {
-				确认: function() {
-					$.ajax({
-						url: logout_url,
-						method: "POST",
-						data: { username: user.username},
-						dataType: "json",
-						success: function(res) {
-							if (res.code === '1') {
-								// 清除用户信息
-								sessionStorage.removeItem('user');
-								localStorage.removeItem('rememberUsername');
-								// 跳转到登录页
-								window.location.href = 'login.html';
-							}else if("0".localeCompare(res.code)  === 0){
-								notices(data.msg);
-							}
-						}
-					});
-				},
-				取消: function() {}
-			}
-		});
+		if (confirm('确定要退出登录吗？')) {
+			$.ajax({
+				url: logout_url,
+				method: "POST",
+				data: { username: user.username },
+				dataType: "json",
+				success: function(res) {
+					if (res.code === '1') {
+						sessionStorage.removeItem('user');
+						localStorage.removeItem('rememberUsername');
+						localStorage.removeItem('user');
+						localStorage.removeItem('isLoggedIn');
+						window.location.href = 'login.html';
+					} else if ("0".localeCompare(res.code) === 0) {
+						notices(data.msg);
+					}
+				}
+			});
+		}
 	});
 
 	// ===== 3. 锁定屏幕 =====

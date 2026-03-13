@@ -100,7 +100,8 @@ body{
 
 .fileImportmodalDialog {
     width: 99%;
-    min-height: 600px;
+    min-height: 700px;
+    height: 99%;
     left: 5px;
     top: 5px;
     border-radius: 3px;
@@ -163,4 +164,88 @@ body{
 .alert {
     padding: 5px 30px 5px 5px;
     margin-bottom: 0px;
+}
+
+/* 表格容器样式 */
+.fixed-table-container {
+    border-radius: 8px;
+    overflow: auto !important;
+}
+
+/* 表格主体样式 */
+.fixed-table-body {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    max-height: 400px;
+}
+
+/* 表格样式 */
+#fileImportTable {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+
+/* 表头样式 */
+#fileImportTable th {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-all !important;
+    background-color: #f8f9fa;
+    font-weight: 600;
+    vertical-align: middle;
+    text-align: center;
+    padding: 8px 4px !important;
+}
+
+/* 单元格样式 - 核心：允许折行 */
+#fileImportTable td {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-all !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    vertical-align: top !important;
+    padding: 8px 4px !important;
+    line-height: 1.4;
+}
+
+/* 确保长内容折行 */
+#fileImportTable td div,
+#fileImportTable td span {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-all !important;
+    max-width: 100%;
+}
+
+/* 可选：为特定列设置最小高度 */
+#fileImportTable td {
+    min-height: 36px;
+}
+
+/* 表格折行通用样式 */
+.table-bootstrap,
+.table-bootstrap td,
+.table-bootstrap th,
+.fixed-table-container table,
+.fixed-table-container td,
+.fixed-table-container th {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-all !important;
+}
+
+
+/* 固定表格布局，确保列宽设置生效 */
+.fixed-table-container table {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+
+/* 单元格内边距和垂直对齐 */
+.fixed-table-container td,
+.fixed-table-container th {
+    vertical-align: top !important;
+    padding: 8px 4px !important;
+    line-height: 1.4;
 }
