@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>用户管理 - 后台管理系统</title>
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/fonts.css" rel="stylesheet">
+    <link href="../../css/home.css" rel="stylesheet">
+    <link href="../../js/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet">
+    <style>
+        .user-stats-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .user-stats-card:hover {
+            transform: translateY(-3px);
+        }
+        .user-avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .user-status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .user-status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        .user-status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .user-status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .user-role-badge {
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .user-role-admin {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .user-role-manager {
+            background: #d4edda;
+            color: #155724;
+        }
+        .user-role-user {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        .table-action-btn {
+            padding: 4px 8px;
+            margin: 0 2px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .table-action-btn:hover {
+            opacity: 0.8;
+        }
+        .table-action-btn.btn-edit {
+            background: #17a2b8;
+            color: #fff;
+        }
+        .table-action-btn.btn-delete {
+            background: #dc3545;
+            color: #fff;
+        }
+        .table-action-btn.btn-reset {
+            background: #ffc107;
+            color: #212529;
+        }
+        .search-box {
+            border: 2px solid #e8ecf1;
+            border-radius: 8px;
+            padding: 8px 16px;
+            transition: all 0.3s;
+        }
+        .search-box:focus {
+            border-color: #6c5ce7;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+        .modal-content {
+            border-radius: 12px;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: #fff;
+            border-radius: 12px 12px 0 0;
+        }
+        .modal-header .close {
+            color: #fff;
+            opacity: 0.8;
+        }
+        .modal-header .close:hover {
+            opacity: 1;
+        }
+        .form-control-custom {
+            border: 2px solid #e8ecf1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            transition: all 0.3s;
+        }
+        .form-control-custom:focus {
+            border-color: #6c5ce7;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 30px;
+            color: #fff;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+            color: #fff;
+        }
+        .btn-outline-custom {
+            border: 2px solid #6c5ce7;
+            color: #6c5ce7;
+            border-radius: 8px;
+            padding: 8px 20px;
+            background: transparent;
+            transition: all 0.3s;
+        }
+        .btn-outline-custom:hover {
+            background: #6c5ce7;
+            color: #fff;
+        }
+        .pagination-custom .page-link {
+            color: #6c5ce7;
+            border-radius: 8px;
+            margin: 0 3px;
+        }
+        .pagination-custom .page-item.active .page-link {
+            background: #6c5ce7;
+            border-color: #6c5ce7;
+            color: #fff;
+        }
+        .filter-section {
+            background: #f8f9fa;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 64px;
+            color: #dee2e6;
+            margin-bottom: 16px;
+        }
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #495057;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--页面主要内容-->
+    <main class="ftdms-layout-content">
+
+        <div class="container-fluid" style="margin-bottom:90px;">
+
+            <!-- 统计卡片 -->
+            <div class="row" style="margin-top:15px;">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card bg-primary user-stats-card">
+                        <div class="card-body clearfix">
+                            <div class="pull-left">
+                                <p class="h6 text-white m-t-0">总用户数</p>
+                                <p class="h3 text-white m-b-0" id="totalUsers">0</p>
+                            </div>
+                            <div class="pull-right">
+                                <span class="img-avatar img-avatar-48 bg-translucent">
+                                    <i class="glyphicon glyphicon-user fa-1-5x"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card bg-success user-stats-card">
+                        <div class="card-body clearfix">
+                            <div class="pull-left">
+                                <p class="h6 text-white m-t-0">活跃用户</p>
+                                <p class="h3 text-white m-b-0" id="activeUsers">0</p>
+                            </div>
+                            <div class="pull-right">
+                                <span class="img-avatar img-avatar-48 bg-translucent">
+                                    <i class="glyphicon glyphicon-ok-circle fa-1-5x"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card bg-warning user-stats-card">
+                        <div class="card-body clearfix">
+                            <div class="pull-left">
+                                <p class="h6 text-white m-t-0">未激活用户</p>
+                                <p class="h3 text-white m-b-0" id="inactiveUsers">0</p>
+                            </div>
+                            <div class="pull-right">
+                                <span class="img-avatar img-avatar-48 bg-translucent">
+                                    <i class="glyphicon glyphicon-time fa-1-5x"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card bg-purple user-stats-card">
+                        <div class="card-body clearfix">
+                            <div class="pull-left">
+                                <p class="h6 text-white m-t-0">管理员</p>
+                                <p class="h3 text-white m-b-0" id="adminUsers">0</p>
+                            </div>
+                            <div class="pull-right">
+                                <span class="img-avatar img-avatar-48 bg-translucent">
+                                    <i class="glyphicon glyphicon-cog fa-1-5x"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户列表 -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>
+                                <i class="glyphicon glyphicon-user" style="margin-right: 8px;"></i>
+                                用户管理
+                            </h4>
+                            <div class="pull-right">
+                                <button class="btn btn-primary btn-sm" id="addUserBtn">
+                                    <i class="glyphicon glyphicon-plus"></i> 新增用户
+                                </button>
+                                <button class="btn btn-success btn-sm" id="refreshBtn">
+                                    <i class="glyphicon glyphicon-refresh"></i> 刷新
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- 筛选条件 -->
+                            <div class="filter-section">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control form-control-custom search-box" 
+                                               id="searchKeyword" placeholder="🔍 搜索用户名/邮箱...">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control form-control-custom" id="filterStatus">
+                                            <option value="">全部状态</option>
+                                            <option value="1">已激活</option>
+                                            <option value="0">未激活</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control form-control-custom" id="filterRole">
+                                            <option value="">全部角色</option>
+                                            <option value="admin">管理员</option>
+                                            <option value="manager">经理</option>
+                                            <option value="user">普通用户</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-primary-custom btn-sm" id="searchBtn">
+                                            <i class="glyphicon glyphicon-search"></i> 搜索
+                                        </button>
+                                        <button class="btn btn-outline-custom btn-sm" id="resetBtn">
+                                            <i class="glyphicon glyphicon-repeat"></i> 重置
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 表格 -->
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="userTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50px;">#</th>
+                                            <th style="width: 60px;">头像</th>
+                                            <th>用户名</th>
+                                            <th>邮箱</th>
+                                            <th>角色</th>
+                                            <th>状态</th>
+                                            <th>最后登录</th>
+                                            <th style="width: 200px;">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="userTableBody">
+                                        <!-- 数据由 JavaScript 动态渲染 -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- 分页 -->
+                            <div class="row" style="margin-top: 16px;">
+                                <div class="col-md-6">
+                                    <span id="tableInfo">共 0 条记录</span>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <nav>
+                                        <ul class="pagination pagination-custom" id="pagination">
+                                            <!-- 分页由 JavaScript 动态渲染 -->
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 新增/编辑用户模态框 -->
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalTitle">
+                        <i class="glyphicon glyphicon-user"></i> 新增用户
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="userForm">
+                        <input type="hidden" id="editUserId" value="">
+                        <div class="form-group">
+                            <label>用户名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-custom" id="formUsername" 
+                                   placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label>邮箱 <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control form-control-custom" id="formEmail" 
+                                   placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group" id="passwordGroup">
+                            <label>密码 <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control form-control-custom" id="formPassword" 
+                                   placeholder="请输入密码（至少8位）">
+                            <small class="text-muted">新增用户时必填，编辑时留空表示不修改</small>
+                        </div>
+                        <div class="form-group">
+                            <label>分配角色</label>
+                            <!-- ✅ 当前角色显示 -->
+                            <div id="currentRoleDisplay" style="margin-bottom: 8px; display: none;"></div>
+                            <select class="form-control form-control-custom" id="formRole">
+                                <option value="">无角色</option>
+                                <!-- 角色由 JS 动态加载 -->
+                            </select>
+                            <small class="text-muted">选择角色后，用户将拥有对应的菜单权限</small>
+                        </div>
+                        <div class="form-group">
+                            <label>状态</label>
+                            <select class="form-control form-control-custom" id="formStatus">
+                                <option value="1">已激活</option>
+                                <option value="0">未激活</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary-custom" id="saveUserBtn">
+                        <i class="glyphicon glyphicon-save"></i> 保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #dc3545;">
+                    <h5 class="modal-title">
+                        <i class="glyphicon glyphicon-trash"></i> 确认删除
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>确定要删除用户 <strong id="deleteUserName"></strong> 吗？</p>
+                    <p class="text-danger"><small>此操作不可恢复！</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="glyphicon glyphicon-trash"></i> 确认删除
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../../js/jquery-2.1.1.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="../../js/utils/constantUtils.js"></script>
+    <script src="../../js/app/common.js"></script>
+    <script src="../../js/app/manager/users.js"></script>
+    <script src="../../js/app/user/userInfo.js"></script>
+    <script src="../../js/utils/memoryUtils.js"></script>
+    <script src="../../js/utils/storageUtils.js"></script>
+</body>
+
+</html>

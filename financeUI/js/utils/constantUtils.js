@@ -5,6 +5,27 @@ const base_url = 'http://'+remoter+':'+ host;
 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const wsUrl = `${protocol}//${remoter}:${host}/ws/notifications/`;
 
+// ===== 用户管理 API =====
+const USER_API = {
+    LIST: base_url + '/Authlogin/api/users/',
+    DETAIL: base_url + '/Authlogin/api/users/',
+    CREATE: base_url + '/Authlogin/api/users/create/',
+    UPDATE: base_url + '/Authlogin/api/users/update/',
+    DELETE: base_url + '/Authlogin/api/users/delete/',
+    RESET_PASSWORD: base_url + '/Authlogin/api/users/reset-password/',    
+};
+
+const ROLE_API = {
+    ROLES: base_url + '/Authlogin/api/roles/',
+    ROLE_CREATE: base_url + '/Authlogin/api/roles/create/',
+    ROLE_UPDATE: base_url + '/Authlogin/api/roles/update/',
+    ROLE_DELETE: base_url + '/Authlogin/api/roles/delete/',
+    PERMISSIONS: base_url + '/Authlogin/api/permissions/',
+    USER_MENUS: base_url + '/Authlogin/api/user/menus/',
+    ROLE_LIST: base_url + '/Authlogin/api/roles/all/',  // ✅ 新增获取所有角色接口
+};
+
+
 const login_url = base_url + '/Authlogin/login/';
 const logout_url = base_url + '/Authlogin/logout/';
 const reg_url = base_url + '/Authlogin/reg/';

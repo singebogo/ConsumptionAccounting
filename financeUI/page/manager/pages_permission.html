@@ -1,452 +1,272 @@
 ﻿<!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>设置权限</title>
-<link href="../../css/bootstrap.min.css" rel="stylesheet">
-<link href="../../css/fonts.css" rel="stylesheet">
-<link href="../../css/style.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>权限管理</title>
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/fonts.css" rel="stylesheet">
+    <link href="../../css/home.css" rel="stylesheet">
+    <style>
+        .role-card {
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            margin-bottom: 16px;
+        }
+        .role-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .role-card.active {
+            border-color: #6c5ce7;
+            background: #f8f7ff;
+        }
+        .role-card .card-header {
+            background: #f8f9fa;
+            padding: 12px 16px;
+        }
+        .permission-tree {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .permission-tree .perm-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        .permission-tree .perm-item:last-child {
+            border-bottom: none;
+        }
+        .permission-tree .perm-item .perm-label {
+            font-size: 14px;
+            color: #495057;
+        }
+        .permission-tree .perm-item .perm-label:hover {
+            color: #6c5ce7;
+        }
+        .perm-level-1 { padding-left: 0; }
+        .perm-level-2 { padding-left: 30px; }
+        .perm-level-3 { padding-left: 60px; }
+        .perm-group-title {
+            font-weight: 600;
+            color: #2d3748;
+            padding: 10px 0;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 8px;
+        }
+        .btn-sm-custom {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .role-badge-admin { background: #cce5ff; color: #004085; }
+        .role-badge-manager { background: #d4edda; color: #155724; }
+        .role-badge-user { background: #e2e3e5; color: #383d41; }
+        .checkbox-custom {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .spinning {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-  
 <body>
-    <!--页面主要内容-->
-    <main class="ftdms-layout-content">
-      
-      <div class="container-fluid" style="margin-bottom:90px;">
+
+<main class="ftdms-layout-content">
+    <div class="container-fluid" style="margin-bottom:90px;">
         
+        <!-- 统计卡片 -->
         <div class="row" style="margin-top:15px;">
-          <div class="col-lg-12">
-            <div class="card">
-              <div class="card-header"><h4>设置权限</h4></div>
-              <div class="card-body">
-                
-                <form action="#!" method="post">
-                  <div class="form-group">
-                    <label for="example-text-input">角色名称</label>
-                    <input class="form-control" type="text" name="role-input" placeholder="角色名称">
-                  </div>
-                  <div class="table-responsive">
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="checkbox" type="checkbox" id="check-all">
-                            <span> 全选</span>
-                          </label>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent" dataid="id-1" value="1">
-                            <span> 系统管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-1-5" value="5">
-                            <span> 网站设置</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-1-6" value="6">
-                            <span> 配置管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-6-20" value="20">
-                            <span> 添加配置</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-6-21" value="21">
-                            <span> 编辑配置</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-6-44" value="44">
-                            <span> 删除配置</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-6-45" value="45">
-                            <span> 禁用/启用配置</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-6-46" value="46">
-                            <span> 设置配置值</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-1-7" value="7">
-                            <span> 导航管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-7-51" value="51">
-                            <span> 添加导航菜单</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-7-52" value="52">
-                            <span> 编辑导航菜单</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-7-53" value="53">
-                            <span> 删除导航菜单</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-1-8" value="8">
-                            <span> 栏目管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-8-40" value="40">
-                            <span> 添加栏目</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-8-41" value="41">
-                            <span> 编辑栏目</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-8-42" value="42">
-                            <span> 删除栏目</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-1-9" value="9">
-                            <span> 权限列表</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-9-36" value="36">
-                            <span> 添加规则</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-9-37" value="37">
-                            <span> 编辑规则</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-9-38" value="38">
-                            <span> 删除规则</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-1-9-39" value="39">
-                            <span> 禁用/启用规则</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-1-73" value="73">
-                            <span> 后台首页</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent" dataid="id-2" value="2">
-                            <span> 用户管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-2-10" value="10">
-                            <span> 角色管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-2-10-31" value="31">
-                            <span> 添加角色</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-2-10-33" value="33">
-                            <span> 编辑角色</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-2-10-34" value="34">
-                            <span> 删除角色</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-2-10-35" value="35">
-                            <span> 禁用/启用角色</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-2-12" value="12">
-                            <span> 用户管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-2-12-62" value="62">
-                            <span> 添加用户</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-2-12-63" value="63">
-                            <span> 编辑用户</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-2-12-64" value="64">
-                            <span> 删除用户</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-2-12-65" value="65">
-                            <span> 启用/禁用用户</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent" dataid="id-3" value="3">
-                            <span> 内容管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-3-13" value="13">
-                            <span> 单页管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-3-13-58" value="58">
-                            <span> 添加单页</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-3-13-59" value="59">
-                            <span> 编辑单页</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-3-13-60" value="60">
-                            <span> 删除单页</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-3-14" value="14">
-                            <span> 文章管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-3-15" value="15">
-                            <span> 文档管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-3-15-16" value="16">
-                            <span> 添加文档</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-3-15-61" value="61">
-                            <span> 删除文档</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-3-15-75" value="75">
-                            <span> 编辑文档</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-3-15-79" value="79">
-                            <span> 启用/禁用文档</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-3-72" value="72">
-                            <span> 下载管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent" dataid="id-4" value="4">
-                            <span> 扩展管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-4-17" value="17">
-                            <span> 广告管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-4-17-27" value="27">
-                            <span> 添加广告</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-4-17-28" value="28">
-                            <span> 编辑广告</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-4-17-29" value="29">
-                            <span> 删除广告</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-4-17-30" value="30">
-                            <span> 禁用/启用广告</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-4-19" value="19">
-                            <span> 友情链接</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-4-19-47" value="47">
-                            <span> 添加友情链接</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-4-19-48" value="48">
-                            <span> 编辑友情链接</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-4-19-49" value="49">
-                            <span> 删除友情链接</span>
-                          </label>
-                          <label class="ftdms-checkbox checkbox-primary checkbox-inline">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-4-19-50" value="50">
-                            <span> 禁用/启用友情链接</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-20">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-parent checkbox-child" dataid="id-4-66" value="66">
-                            <span> 附件管理</span>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="p-l-40">
-                          <label class="ftdms-checkbox checkbox-primary">
-                            <input name="rules[]" type="checkbox" class="checkbox-child" dataid="id-4-66-67" value="67">
-                            <span> 上传图片</span>
-                          </label>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card bg-primary">
+                    <div class="card-body clearfix">
+                        <div class="pull-left">
+                            <p class="h6 text-white m-t-0">角色总数</p>
+                            <p class="h3 text-white m-b-0" id="totalRoles">0</p>
+                        </div>
+                        <div class="pull-right">
+                            <span class="img-avatar img-avatar-48 bg-translucent">
+                                <i class="glyphicon glyphicon-user fa-1-5x"></i>
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                </form>
-                
-              </div>
             </div>
-          </div>
-          
+            <div class="col-sm-6 col-lg-3">
+                <div class="card bg-success">
+                    <div class="card-body clearfix">
+                        <div class="pull-left">
+                            <p class="h6 text-white m-t-0">权限总数</p>
+                            <p class="h3 text-white m-b-0" id="totalPermissions">0</p>
+                        </div>
+                        <div class="pull-right">
+                            <span class="img-avatar img-avatar-48 bg-translucent">
+                                <i class="glyphicon glyphicon-lock fa-1-5x"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card bg-warning">
+                    <div class="card-body clearfix">
+                        <div class="pull-left">
+                            <p class="h6 text-white m-t-0">已分配用户</p>
+                            <p class="h3 text-white m-b-0" id="totalAssignedUsers">0</p>
+                        </div>
+                        <div class="pull-right">
+                            <span class="img-avatar img-avatar-48 bg-translucent">
+                                <i class="glyphicon glyphicon-ok-circle fa-1-5x"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card bg-purple">
+                    <div class="card-body clearfix">
+                        <div class="pull-left">
+                            <p class="h6 text-white m-t-0">菜单组</p>
+                            <p class="h3 text-white m-b-0" id="totalMenuGroups">0</p>
+                        </div>
+                        <div class="pull-right">
+                            <span class="img-avatar img-avatar-48 bg-translucent">
+                                <i class="glyphicon glyphicon-th-list fa-1-5x"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-      </div>
-      
-    </main>
-    <!--End 页面主要内容-->
+
+        <div class="row">
+            <!-- 左侧：角色列表 -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="glyphicon glyphicon-user"></i> 角色列表</h4>
+                        <div class="pull-right">
+                            <button class="btn btn-primary btn-sm" id="addRoleBtn">
+                                <i class="glyphicon glyphicon-plus"></i> 新增
+                            </button>
+                            <button class="btn btn-success btn-sm" id="refreshRolesBtn">
+                                <i class="glyphicon glyphicon-refresh"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 8px;">
+                        <div id="roleList">
+                            <!-- 角色列表由 JS 动态渲染 -->
+                            <div class="text-center text-muted" style="padding: 40px 0;">
+                                <i class="glyphicon glyphicon-refresh spinning"></i> 加载中...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：权限配置 -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 id="permissionTitle"><i class="glyphicon glyphicon-lock"></i> 权限配置</h4>
+                        <div class="pull-right">
+                            <button class="btn btn-primary btn-sm" id="savePermissionBtn">
+                                <i class="glyphicon glyphicon-save"></i> 保存权限
+                            </button>
+                            <button class="btn btn-default btn-sm" id="selectAllBtn">
+                                <i class="glyphicon glyphicon-check"></i> 全选
+                            </button>
+                            <button class="btn btn-default btn-sm" id="deselectAllBtn">
+                                <i class="glyphicon glyphicon-unchecked"></i> 取消全选
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="permissionTree" class="permission-tree">
+                            <!-- 权限树由 JS 动态渲染 -->
+                            <div class="text-center text-muted" style="padding: 60px 0;">
+                                <i class="glyphicon glyphicon-hand-left" style="font-size: 32px;"></i>
+                                <p style="margin-top: 12px;">请从左侧选择一个角色</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 新增/编辑角色模态框 -->
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #6c5ce7, #a29bfe); color: #fff;">
+                <h5 class="modal-title" id="roleModalTitle"><i class="glyphicon glyphicon-plus"></i> 新增角色</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form id="roleForm">
+                    <input type="hidden" id="editRoleId">
+                    <div class="form-group">
+                        <label>角色名称 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="roleName" placeholder="请输入角色名称" required>
+                        <small class="text-muted">例如：管理员、编辑、访客</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveRoleBtn">
+                    <i class="glyphicon glyphicon-save"></i> 保存
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认模态框 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #dc3545; color: #fff;">
+                <h5 class="modal-title"><i class="glyphicon glyphicon-trash"></i> 确认删除</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p>确定要删除角色 <strong id="deleteRoleName"></strong> 吗？</p>
+                <p class="text-danger"><small>此操作将移除该角色的所有权限分配，不可恢复！</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="glyphicon glyphicon-trash"></i> 确认删除
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script type="text/javascript" src="../../js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../js/main.min.js"></script>
-<script type="text/javascript" src="../../js/chosen.jquery.min.js"></script>
-
-<script type="text/javascript">
-$(function(){
-    //动态选择框，上下级选中状态变化
-    $('input.checkbox-parent').on('change', function(){
-        var dataid = $(this).attr("dataid");
-        $('input[dataid^=' + dataid + '-]').prop('checked', $(this).is(':checked'));
-    });
-    $('input.checkbox-child').on('change', function(){
-        var dataid = $(this).attr("dataid");
-            dataid = dataid.substring(0, dataid.lastIndexOf("-"));
-        var parent = $('input[dataid=' + dataid + ']');
-        if($(this).is(':checked')){
-            parent.prop('checked', true);
-            //循环到顶级
-            while(dataid.lastIndexOf("-") != 2){
-                dataid = dataid.substring(0, dataid.lastIndexOf("-"));
-                parent = $('input[dataid=' + dataid + ']');
-                parent.prop('checked', true);
-            }
-        }else{
-            //父级
-            if($('input[dataid^=' + dataid + '-]:checked').length == 0){
-                parent.prop('checked', false);
-                //循环到顶级
-                while(dataid.lastIndexOf("-") != 2){
-                    dataid = dataid.substring(0, dataid.lastIndexOf("-"));
-                    parent = $('input[dataid=' + dataid + ']');
-                    if($('input[dataid^=' + dataid + '-]:checked').length == 0){
-                        parent.prop('checked', false);
-                    }
-                }
-            }
-        }
-    });
-});
-</script>
+<script src="../../js/bootstrap.min.js"></script>
+<script src="../../js/app/user/userInfo.js"></script>
+<script src="../../js/utils/constantUtils.js"></script>
+<script src="../../js/utils/memoryUtils.js"></script>
+<script src="../../js/utils/storageUtils.js"></script>
+<script src="../../js/app/manager/permission.js"></script>
 </body>
 </html>
